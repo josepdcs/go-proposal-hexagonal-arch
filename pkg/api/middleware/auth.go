@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func AuthorizationMiddleware(c *gin.Context) {
@@ -52,8 +52,12 @@ func LoginHandler(c *gin.Context) {
 
 	// Create token
 	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.StandardClaims{
+	/*token := jwt.NewWithClaims(jwt.SigningMethodHS256, &jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+	})*/
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
+		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Hour * 72)},
 	})
 
 	ss, err := token.SignedString([]byte("secret"))
