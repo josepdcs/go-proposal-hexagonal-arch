@@ -27,9 +27,8 @@ test-coverage: ## Run tests and generate coverage file
 
 deps: ## Install dependencies
 	# go get $(go list -f '{{if not (or .Main .Indirect)}}{{.Path}}{{end}}' -m all)
-	$(GOCMD) get -u -t -d -v ./...
+	$(GOCMD) get -u -t -v ./...
 	$(GOCMD) mod tidy
-	$(GOCMD) mod vendor
 
 deps-cleancache: ## Clear cache in Go module
 	$(GOCMD) clean -modcache
@@ -39,6 +38,9 @@ wire: ## Generate wire_gen.go
 
 swag: ## Generate swagger docs
 	swag init -g pkg/http/handler/user.go -o ./cmd/api/docs
+
+clean: ## Remove build related files
+	rm -rf $(BUILD_DIR)
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
