@@ -6,13 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	services "github.com/thnkrn/go-gin-clean-arch/pkg/usecase/interface"
+	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
+	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
 )
 
 type UserHandler struct {
-	userUseCase services.UserUseCase
+	userFindAllUseCase usecase.UserFindAllUseCase
+	userUseCase        usecase.UserUseCase
 }
 
 type Response struct {
@@ -21,9 +21,10 @@ type Response struct {
 	Surname string `copier:"must"`
 }
 
-func NewUserHandler(usecase services.UserUseCase) *UserHandler {
+func NewUserHandler(userFindAllUseCase usecase.UserFindAllUseCase, useCase usecase.UserUseCase) *UserHandler {
 	return &UserHandler{
-		userUseCase: usecase,
+		userFindAllUseCase: userFindAllUseCase,
+		userUseCase:        useCase,
 	}
 }
 
@@ -36,8 +37,8 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @produce json
 // @Router /api/users [get]
 // @response 200 {object} []Response "OK"
-func (cr *UserHandler) FindAll(c *gin.Context) {
-	users, err := cr.userUseCase.FindAll(c.Request.Context())
+func (h *UserHandler) FindAll(c *gin.Context) {
+	users, err := h.userFindAllUseCase.FindAll(c.Request.Context())
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -49,7 +50,7 @@ func (cr *UserHandler) FindAll(c *gin.Context) {
 	}
 }
 
-func (cr *UserHandler) FindByID(c *gin.Context) {
+func (h *UserHandler) FindByID(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -60,7 +61,7 @@ func (cr *UserHandler) FindByID(c *gin.Context) {
 		return
 	}
 
-	user, err := cr.userUseCase.FindByID(c.Request.Context(), uint(id))
+	user, err := h.userUseCase.FindByID(c.Request.Context(), uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -72,15 +73,15 @@ func (cr *UserHandler) FindByID(c *gin.Context) {
 	}
 }
 
-func (cr *UserHandler) Save(c *gin.Context) {
-	var user domain.Users
+func (h *UserHandler) Save(c *gin.Context) {
+	var user entity.User
 
 	if err := c.BindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 
-	user, err := cr.userUseCase.Save(c.Request.Context(), user)
+	user, err := h.userUseCase.Create(c.Request.Context(), user)
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -92,7 +93,7 @@ func (cr *UserHandler) Save(c *gin.Context) {
 	}
 }
 
-func (cr *UserHandler) Delete(c *gin.Context) {
+func (h *UserHandler) Delete(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -104,20 +105,20 @@ func (cr *UserHandler) Delete(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	user, err := cr.userUseCase.FindByID(ctx, uint(id))
+	user, err := h.userUseCase.FindByID(ctx, uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	}
 
-	if user == (domain.Users{}) {
+	if user == (entity.User{}) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "User is not booking yet",
 		})
 		return
 	}
 
-	cr.userUseCase.Delete(ctx, user)
+	h.userUseCase.Delete(ctx, user)
 
 	c.JSON(http.StatusOK, gin.H{"message": "User is deleted successfully"})
 }

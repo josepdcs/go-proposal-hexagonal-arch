@@ -3,11 +3,10 @@ package db
 import (
 	"fmt"
 
+	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/config"
+	domain "github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	config "github.com/thnkrn/go-gin-clean-arch/pkg/config"
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
 )
 
 func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
@@ -16,7 +15,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&domain.Users{})
+	db.AutoMigrate(&domain.User{})
 
 	return db, dbErr
 }

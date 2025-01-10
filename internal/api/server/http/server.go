@@ -6,8 +6,8 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
-	handler "github.com/thnkrn/go-gin-clean-arch/pkg/api/handler"
-	middleware "github.com/thnkrn/go-gin-clean-arch/pkg/api/middleware"
+	"github.com/thnkrn/go-gin-clean-arch/internal/api/handler"
+	"github.com/thnkrn/go-gin-clean-arch/internal/api/middleware"
 )
 
 type ServerHTTP struct {
