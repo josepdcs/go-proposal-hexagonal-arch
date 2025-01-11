@@ -17,7 +17,7 @@ var envs = []string{
 	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD",
 }
 
-func LoadConfig() (Config, error) {
+func Load() (Config, error) {
 	var config Config
 
 	viper.AddConfigPath("./")

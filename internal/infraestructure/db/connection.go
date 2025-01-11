@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/config"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infraestructure/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,7 +15,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&entity.User{})
+	db.AutoMigrate(&repository.DBUserEntity{})
 
 	return db, dbErr
 }

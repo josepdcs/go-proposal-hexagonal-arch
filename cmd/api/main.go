@@ -8,14 +8,14 @@ import (
 )
 
 func main() {
-	config, configErr := config.LoadConfig()
-	if configErr != nil {
-		log.Fatal("cannot load config: ", configErr)
+	c, err := config.Load()
+	if err != nil {
+		log.Fatal("cannot load c: ", err)
 	}
 
-	server, diErr := di.InitializeAPI(config)
-	if diErr != nil {
-		log.Fatal("cannot start server: ", diErr)
+	server, err := di.InitializeAPI(c)
+	if err != nil {
+		log.Fatal("cannot start server: ", err)
 	} else {
 		server.Start()
 	}
