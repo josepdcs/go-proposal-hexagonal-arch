@@ -4,7 +4,7 @@
 
 The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Gin.
 
-This project is based on and forked from [go-gin-clean-arch](ttps://github.com/thnkrn/go-gin-clean-arch)
+This project is based on and forked from [go-gin-clean-arch](https://github.com/thnkrn/go-gin-clean-arch)
 
 In this project, I have aimed to adhere to Golang naming conventions and best practices, including:
 - [Effective Go](https://golang.org/doc/effective_go.html)
