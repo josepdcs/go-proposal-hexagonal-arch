@@ -1,4 +1,6 @@
-# Clean Architecture using Golang with Gin framework
+# My proposal for a hexagonal architecture in Go with Gin
+
+This is a fork from [https://github.com/thnkrn/go-gin-clean-arch](https://github.com/thnkrn/go-gin-clean-arch)
 
 ## Template Structure
 
@@ -15,14 +17,14 @@ To use `go-gin-clean-arch` project, follow these steps:
 
 ```bash
 # Navigate into the project
-cd ./go-gin-clean-arch
+cd ./go-proposal-hexagonal-arch
 
 # Install dependencies
 make deps
 
-# Generate wire_gen.go for dependency injection
+# Generate wire_gen.go for dependency injection & build the project
 # Please make sure you are export the env for GOPATH
-make wire
+make build
 
 # Run the project in Development Mode
 make run
