@@ -22,6 +22,7 @@ run: ## Start application
 	$(GOCMD) run ./cmd/api
 
 test: ## Run tests
+	$(info $(M) Running Tests..)
 	$(GOCMD) test ./... -cover
 
 test-coverage: ## Run tests and generate coverage file
@@ -43,7 +44,7 @@ wire: ## Generate wire_gen.go
 
 swag: ## Generate swagger docs
 	$(info $(M) Running Swag...)
-	swag init -g interal/api/handler/user.go -o ./cmd/api/docs
+	swag init -g internal/api/handler/user.go -o cmd/api/docs
 
 clean: ## Remove build related files
 	$(info $(M) Cleaning...)
