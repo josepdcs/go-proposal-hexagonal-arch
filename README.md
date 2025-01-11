@@ -1,6 +1,15 @@
 # My proposal for a hexagonal architecture in Go with Gin
 
-This is a fork from [https://github.com/thnkrn/go-gin-clean-arch](https://github.com/thnkrn/go-gin-clean-arch)
+**This is a proposal for implementing a hexagonal architecture in Go using the Gin framework.**
+
+The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Gin.
+
+This project is based on and forked from [go-gin-clean-arch](ttps://github.com/thnkrn/go-gin-clean-arch)
+
+In this project, I have aimed to adhere to Golang naming conventions and best practices, including:
+- [Effective Go](https://golang.org/doc/effective_go.html)
+  - https://go.dev/doc/effective_go#package-names
+  - https://go.dev/blog/package-names
 
 ## Template Structure
 
@@ -11,9 +20,9 @@ This is a fork from [https://github.com/thnkrn/go-gin-clean-arch](https://github
 - [Viper](https://github.com/spf13/viper) is a complete configuration solution for Go applications including 12-Factor apps. It is designed to work within an application, and can handle all types of configuration needs and formats.
 - [swag](https://github.com/swaggo/swag) converts Go annotations to Swagger Documentation 2.0 with [gin-swagger](https://github.com/swaggo/gin-swagger) and [swaggo files](github.com/swaggo/files)
 
-## Using `go-gin-clean-arch` project
+## Using `go-proposal-hexagonal-arch` project
 
-To use `go-gin-clean-arch` project, follow these steps:
+To use `go-proposal-hexagonal-arch` project, follow these steps:
 
 ```bash
 # Navigate into the project
