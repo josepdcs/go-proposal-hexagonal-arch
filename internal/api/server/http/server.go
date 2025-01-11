@@ -14,7 +14,7 @@ type Server struct {
 	engine *gin.Engine
 }
 
-func NewServer(user *handler.User) *Server {
+func NewServer(user *handler.UserAPI) *Server {
 	engine := gin.New()
 
 	// Use logger from Gin

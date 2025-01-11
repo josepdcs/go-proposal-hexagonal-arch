@@ -10,7 +10,10 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
 )
 
-type User struct {
+const errBuildResponseTxt = "cannot build response"
+
+// UserAPI encapsulates the user use cases.
+type UserAPI struct {
 	findAll  usecase.UserFindAll
 	findByID usecase.UserFindByID
 	create   usecase.UserCreate
@@ -24,14 +27,15 @@ type Response struct {
 	Surname string `copier:"must"`
 }
 
-func NewUser(
+// NewUserAPI creates a new UserAPI.
+func NewUserAPI(
 	findAll usecase.UserFindAll,
 	findByID usecase.UserFindByID,
 	create usecase.UserCreate,
 	modify usecase.UserModify,
 	delete usecase.UserDelete,
-) *User {
-	return &User{
+) *UserAPI {
+	return &UserAPI{
 		findAll:  findAll,
 		findByID: findByID,
 		create:   create,
@@ -49,20 +53,27 @@ func NewUser(
 // @produce json
 // @Router /api/users [get]
 // @response 200 {object} []Response "OK"
-func (h *User) FindAll(c *gin.Context) {
+func (h *UserAPI) FindAll(c *gin.Context) {
 	users, err := h.findAll.FindAll(c.Request.Context())
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		response := []Response{}
-		copier.Copy(&response, &users)
+		response := make([]Response, 0, len(users))
+		err = copier.Copy(&response, &users)
+		if err != nil {
+
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": errBuildResponseTxt,
+			})
+			return
+		}
 
 		c.JSON(http.StatusOK, response)
 	}
 }
 
-func (h *User) FindByID(c *gin.Context) {
+func (h *UserAPI) FindByID(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -79,13 +90,19 @@ func (h *User) FindByID(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		response := Response{}
-		copier.Copy(&response, &user)
+		err = copier.Copy(&response, &user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": errBuildResponseTxt,
+			})
+			return
+		}
 
 		c.JSON(http.StatusOK, response)
 	}
 }
 
-func (h *User) Save(c *gin.Context) {
+func (h *UserAPI) Save(c *gin.Context) {
 	var user entity.User
 
 	if err := c.BindJSON(&user); err != nil {
@@ -99,13 +116,19 @@ func (h *User) Save(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		response := Response{}
-		copier.Copy(&response, &user)
+		err = copier.Copy(&response, &user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": errBuildResponseTxt,
+			})
+			return
+		}
 
 		c.JSON(http.StatusOK, response)
 	}
 }
 
-func (h *User) Delete(c *gin.Context) {
+func (h *UserAPI) Delete(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -138,5 +161,5 @@ func (h *User) Delete(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "User is deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "UserAPI is deleted successfully"})
 }

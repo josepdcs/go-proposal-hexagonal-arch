@@ -22,13 +22,13 @@ func InitializeAPI(cfg config.Config) (*http.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	userRepository := repository.NewUserRepository(gormDB)
-	userFindAll := usecase.NewUserFindAll(userRepository)
-	userFindByID := usecase.NewUserFindByID(userRepository)
-	userCreate := usecase.NewUserCreate(userRepository)
-	userModify := usecase.NewUserModify(userRepository)
-	userDelete := usecase.NewUserDelete(userRepository)
-	user := handler.NewUser(userFindAll, userFindByID, userCreate, userModify, userDelete)
-	server := http.NewServer(user)
+	user := repository.NewUser(gormDB)
+	userFindAll := usecase.NewUserFindAll(user)
+	userFindByID := usecase.NewUserFindByID(user)
+	userCreate := usecase.NewUserCreate(user)
+	userModify := usecase.NewUserModify(user)
+	userDelete := usecase.NewUserDelete(user)
+	userAPI := handler.NewUserAPI(userFindAll, userFindByID, userCreate, userModify, userDelete)
+	server := http.NewServer(userAPI)
 	return server, nil
 }

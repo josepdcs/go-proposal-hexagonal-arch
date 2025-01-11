@@ -35,17 +35,17 @@ func toDBUserEntity(u entity.User) DBUserEntity {
 	}
 }
 
-type UserRepository struct {
+type User struct {
 	DB *gorm.DB
 }
 
-// NewUserRepository creates a new instance of repository.UserRepository
-func NewUserRepository(DB *gorm.DB) repository.UserRepository {
-	return &UserRepository{DB}
+// NewUser creates a new instance of repository.User
+func NewUser(DB *gorm.DB) repository.User {
+	return &User{DB}
 }
 
 // FindAll returns all users
-func (r *UserRepository) FindAll(ctx context.Context) ([]entity.User, error) {
+func (r *User) FindAll(ctx context.Context) ([]entity.User, error) {
 	var userEntities []DBUserEntity
 	err := r.DB.Find(&userEntities).Error
 
@@ -58,7 +58,7 @@ func (r *UserRepository) FindAll(ctx context.Context) ([]entity.User, error) {
 }
 
 // FindByID returns a user by ID
-func (r *UserRepository) FindByID(ctx context.Context, id uint) (entity.User, error) {
+func (r *User) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	var userEntity DBUserEntity
 	err := r.DB.First(&userEntity, id).Error
 
@@ -66,17 +66,17 @@ func (r *UserRepository) FindByID(ctx context.Context, id uint) (entity.User, er
 }
 
 // Create creates a user
-func (r *UserRepository) Create(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *User) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	return r.save(ctx, user)
 }
 
 // Modify modifies a user
-func (r *UserRepository) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *User) Modify(ctx context.Context, user entity.User) (entity.User, error) {
 	return r.save(ctx, user)
 }
 
 // save saves a user
-func (r *UserRepository) save(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *User) save(ctx context.Context, user entity.User) (entity.User, error) {
 	userEntity := toDBUserEntity(user)
 	err := r.DB.Save(&userEntity).Error
 
@@ -84,7 +84,7 @@ func (r *UserRepository) save(ctx context.Context, user entity.User) (entity.Use
 }
 
 // Delete deletes a user
-func (r *UserRepository) Delete(ctx context.Context, user entity.User) error {
+func (r *User) Delete(ctx context.Context, user entity.User) error {
 	userEntity := toDBUserEntity(user)
 	err := r.DB.Delete(&userEntity).Error
 

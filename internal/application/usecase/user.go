@@ -10,90 +10,90 @@ import (
 
 // UserFindAll use case
 type UserFindAll struct {
-	userRepository repository.UserRepository
+	user repository.User
 }
 
 // NewUserFindAll creates a new usecase.UserFindAll instance
-func NewUserFindAll(userRepository repository.UserRepository) usecase.UserFindAll {
+func NewUserFindAll(user repository.User) usecase.UserFindAll {
 	return &UserFindAll{
-		userRepository: userRepository,
+		user: user,
 	}
 }
 
 // FindAll returns all users
 func (u *UserFindAll) FindAll(ctx context.Context) ([]entity.User, error) {
-	users, err := u.userRepository.FindAll(ctx)
+	users, err := u.user.FindAll(ctx)
 	return users, err
 }
 
 // UserFindByID use case
 type UserFindByID struct {
-	userRepository repository.UserRepository
+	user repository.User
 }
 
 // NewUserFindByID creates a new usecase.UserFindByID instance
-func NewUserFindByID(userRepository repository.UserRepository) usecase.UserFindByID {
+func NewUserFindByID(user repository.User) usecase.UserFindByID {
 	return &UserFindByID{
-		userRepository: userRepository,
+		user: user,
 	}
 }
 
 // FindByID returns a user by ID
 func (u *UserFindByID) FindByID(ctx context.Context, id uint) (entity.User, error) {
-	user, err := u.userRepository.FindByID(ctx, id)
+	user, err := u.user.FindByID(ctx, id)
 	return user, err
 }
 
 // UserCreate use case
 type UserCreate struct {
-	userRepository repository.UserRepository
+	user repository.User
 }
 
 // NewUserCreate creates a new usecase.UserCreate instance
-func NewUserCreate(userRepository repository.UserRepository) usecase.UserCreate {
+func NewUserCreate(user repository.User) usecase.UserCreate {
 	return &UserCreate{
-		userRepository: userRepository,
+		user: user,
 	}
 }
 
 // Create creates a new user
 func (u *UserCreate) Create(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := u.userRepository.Create(ctx, user)
+	user, err := u.user.Create(ctx, user)
 	return user, err
 }
 
 // UserModify use case
 type UserModify struct {
-	userRepository repository.UserRepository
+	user repository.User
 }
 
 // NewUserModify creates a new usecase.UserModify instance
-func NewUserModify(userRepository repository.UserRepository) usecase.UserModify {
+func NewUserModify(user repository.User) usecase.UserModify {
 	return &UserModify{
-		userRepository: userRepository,
+		user: user,
 	}
 }
 
 // Modify modifies a user
 func (u *UserModify) Modify(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := u.userRepository.Modify(ctx, user)
+	user, err := u.user.Modify(ctx, user)
 	return user, err
 }
 
 // UserDelete use case
 type UserDelete struct {
-	userRepository repository.UserRepository
+	user repository.User
 }
 
 // NewUserDelete creates a new usecase.UserDelete instance
-func NewUserDelete(userRepository repository.UserRepository) usecase.UserDelete {
+func NewUserDelete(user repository.User) usecase.UserDelete {
 	return &UserDelete{
-		userRepository: userRepository,
+		user: user,
 	}
 }
 
 // Delete deletes a user
 func (u *UserDelete) Delete(ctx context.Context, user entity.User) error {
-	err := u.userRepository.Delete(ctx, user)
+	err := u.user.Delete(ctx, user)
 	return err
 }
