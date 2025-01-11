@@ -6,30 +6,32 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
 )
 
-type UserUseCase interface {
-	UserFindAllUseCase
-	UserFindByIDUseCase
-	UserCreateUseCase
-	UserModifyUseCase
-	UserDeleteUseCase
-}
-
-type UserFindAllUseCase interface {
+// UserFindAll use case for finding all users
+type UserFindAll interface {
+	// FindAll returns all users
 	FindAll(ctx context.Context) ([]entity.User, error)
 }
 
-type UserFindByIDUseCase interface {
+// UserFindByID use case for finding a user by ID
+type UserFindByID interface {
+	// FindByID returns a user by ID
 	FindByID(ctx context.Context, id uint) (entity.User, error)
 }
 
-type UserCreateUseCase interface {
+// UserCreate use case for creating a user
+type UserCreate interface {
+	// Create creates a user
 	Create(ctx context.Context, user entity.User) (entity.User, error)
 }
 
-type UserModifyUseCase interface {
+// UserModify use case for modifying a user
+type UserModify interface {
+	// Modify modifies a user
 	Modify(ctx context.Context, user entity.User) (entity.User, error)
 }
 
-type UserDeleteUseCase interface {
+// UserDelete use case for deleting a user
+type UserDelete interface {
+	// Delete deletes a user
 	Delete(ctx context.Context, user entity.User) error
 }

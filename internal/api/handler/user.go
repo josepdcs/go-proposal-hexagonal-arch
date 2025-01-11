@@ -10,9 +10,12 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
 )
 
-type UserHandler struct {
-	userFindAllUseCase usecase.UserFindAllUseCase
-	userUseCase        usecase.UserUseCase
+type User struct {
+	findAll  usecase.UserFindAll
+	findByID usecase.UserFindByID
+	create   usecase.UserCreate
+	modify   usecase.UserModify
+	delete   usecase.UserDelete
 }
 
 type Response struct {
@@ -21,10 +24,19 @@ type Response struct {
 	Surname string `copier:"must"`
 }
 
-func NewUserHandler(userFindAllUseCase usecase.UserFindAllUseCase, useCase usecase.UserUseCase) *UserHandler {
-	return &UserHandler{
-		userFindAllUseCase: userFindAllUseCase,
-		userUseCase:        useCase,
+func NewUser(
+	findAll usecase.UserFindAll,
+	findByID usecase.UserFindByID,
+	create usecase.UserCreate,
+	modify usecase.UserModify,
+	delete usecase.UserDelete,
+) *User {
+	return &User{
+		findAll:  findAll,
+		findByID: findByID,
+		create:   create,
+		modify:   modify,
+		delete:   delete,
 	}
 }
 
@@ -37,8 +49,8 @@ func NewUserHandler(userFindAllUseCase usecase.UserFindAllUseCase, useCase useca
 // @produce json
 // @Router /api/users [get]
 // @response 200 {object} []Response "OK"
-func (h *UserHandler) FindAll(c *gin.Context) {
-	users, err := h.userFindAllUseCase.FindAll(c.Request.Context())
+func (h *User) FindAll(c *gin.Context) {
+	users, err := h.findAll.FindAll(c.Request.Context())
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -50,7 +62,7 @@ func (h *UserHandler) FindAll(c *gin.Context) {
 	}
 }
 
-func (h *UserHandler) FindByID(c *gin.Context) {
+func (h *User) FindByID(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -61,7 +73,7 @@ func (h *UserHandler) FindByID(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userUseCase.FindByID(c.Request.Context(), uint(id))
+	user, err := h.findByID.FindByID(c.Request.Context(), uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -73,7 +85,7 @@ func (h *UserHandler) FindByID(c *gin.Context) {
 	}
 }
 
-func (h *UserHandler) Save(c *gin.Context) {
+func (h *User) Save(c *gin.Context) {
 	var user entity.User
 
 	if err := c.BindJSON(&user); err != nil {
@@ -81,7 +93,7 @@ func (h *UserHandler) Save(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userUseCase.Create(c.Request.Context(), user)
+	user, err := h.create.Create(c.Request.Context(), user)
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -93,7 +105,7 @@ func (h *UserHandler) Save(c *gin.Context) {
 	}
 }
 
-func (h *UserHandler) Delete(c *gin.Context) {
+func (h *User) Delete(c *gin.Context) {
 	paramsId := c.Param("id")
 	id, err := strconv.Atoi(paramsId)
 
@@ -105,7 +117,7 @@ func (h *UserHandler) Delete(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	user, err := h.userUseCase.FindByID(ctx, uint(id))
+	user, err := h.findByID.FindByID(ctx, uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -118,7 +130,13 @@ func (h *UserHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	h.userUseCase.Delete(ctx, user)
+	err = h.delete.Delete(ctx, user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Cannot delete user",
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "User is deleted successfully"})
 }

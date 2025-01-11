@@ -13,15 +13,18 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/infraestructure/repository"
 )
 
-func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
+func InitializeAPI(cfg config.Config) (*http.Server, error) {
 	wire.Build(
 		db.ConnectDatabase,
 		repository.NewUserRepository,
-		usecase.NewUserFindAllUseCase,
-		usecase.NewUserUseCase,
-		handler.NewUserHandler,
-		http.NewServerHTTP,
+		usecase.NewUserFindAll,
+		usecase.NewUserFindByID,
+		usecase.NewUserCreate,
+		usecase.NewUserModify,
+		usecase.NewUserDelete,
+		handler.NewUser,
+		http.NewServer,
 	)
 
-	return &http.ServerHTTP{}, nil
+	return &http.Server{}, nil
 }

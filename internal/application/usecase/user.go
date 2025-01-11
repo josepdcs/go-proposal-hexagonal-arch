@@ -5,58 +5,80 @@ import (
 
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/repository"
-	services "github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
+	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
 )
 
-type userFindAllUseCase struct {
+type userFindAll struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserFindAllUseCase(userRepository repository.UserRepository) services.UserFindAllUseCase {
-	return &userFindAllUseCase{
+func NewUserFindAll(userRepository repository.UserRepository) usecase.UserFindAll {
+	return &userFindAll{
 		userRepository: userRepository,
 	}
 }
 
-func (u *userFindAllUseCase) FindAll(ctx context.Context) ([]entity.User, error) {
+func (u *userFindAll) FindAll(ctx context.Context) ([]entity.User, error) {
 	users, err := u.userRepository.FindAll(ctx)
 	return users, err
 }
 
-type userUseCase struct {
+type userFindByID struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserUseCase(userRepository repository.UserRepository) services.UserUseCase {
-	return &userUseCase{
+func NewUserFindByID(userRepository repository.UserRepository) usecase.UserFindByID {
+	return &userFindByID{
 		userRepository: userRepository,
 	}
 }
 
-func (c *userUseCase) FindAll(ctx context.Context) ([]entity.User, error) {
-	users, err := c.userRepository.FindAll(ctx)
-	return users, err
-}
-
-func (c *userUseCase) FindByID(ctx context.Context, id uint) (entity.User, error) {
-	user, err := c.userRepository.FindByID(ctx, id)
+func (u *userFindByID) FindByID(ctx context.Context, id uint) (entity.User, error) {
+	user, err := u.userRepository.FindByID(ctx, id)
 	return user, err
 }
 
-func (c *userUseCase) Create(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := c.userRepository.Create(ctx, user)
+type userCreate struct {
+	userRepository repository.UserRepository
+}
 
+func NewUserCreate(userRepository repository.UserRepository) usecase.UserCreate {
+	return &userCreate{
+		userRepository: userRepository,
+	}
+}
+
+func (u *userCreate) Create(ctx context.Context, user entity.User) (entity.User, error) {
+	user, err := u.userRepository.Create(ctx, user)
 	return user, err
 }
 
-func (c *userUseCase) Modify(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := c.userRepository.Modify(ctx, user)
+type userModify struct {
+	userRepository repository.UserRepository
+}
 
+func NewUserModify(userRepository repository.UserRepository) usecase.UserModify {
+	return &userModify{
+		userRepository: userRepository,
+	}
+}
+
+func (u *userModify) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+	user, err := u.userRepository.Modify(ctx, user)
 	return user, err
 }
 
-func (c *userUseCase) Delete(ctx context.Context, user entity.User) error {
-	err := c.userRepository.Delete(ctx, user)
+type userDelete struct {
+	userRepository repository.UserRepository
+}
 
+func NewUserDelete(userRepository repository.UserRepository) usecase.UserDelete {
+	return &userDelete{
+		userRepository: userRepository,
+	}
+}
+
+func (u *userDelete) Delete(ctx context.Context, user entity.User) error {
+	err := u.userRepository.Delete(ctx, user)
 	return err
 }
