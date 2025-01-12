@@ -16,7 +16,7 @@ import (
 func InitializeAPI(cfg config.Config) (*http.Server, error) {
 	wire.Build(
 		db.ConnectDatabase,
-		repository.NewUser,
+		repository.NewUserDB,
 		usecase.NewUserFindAll,
 		usecase.NewUserFindByID,
 		usecase.NewUserCreate,

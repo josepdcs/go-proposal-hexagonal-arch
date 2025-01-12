@@ -15,7 +15,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&repository.DBUserEntity{})
+	db.AutoMigrate(&repository.UserDBEntity{})
 
 	return db, dbErr
 }

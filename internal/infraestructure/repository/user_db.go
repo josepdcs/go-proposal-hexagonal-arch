@@ -8,8 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// DBUserEntity represents a user entity in the database
-type DBUserEntity struct {
+// UserDBEntity represents a user entity in the database
+type UserDBEntity struct {
 	ID      uint   `json:"id" gorm:"unique;not null"`
 	Name    string `json:"name"`
 	Surname string `json:"surname"`
@@ -17,8 +17,8 @@ type DBUserEntity struct {
 	gorm.Model
 }
 
-// toEntityUser converts a DBUserEntity to an entity.User
-func toEntityUser(u DBUserEntity) entity.User {
+// toEntityUser converts a UserDBEntity to an entity.User
+func toEntityUser(u UserDBEntity) entity.User {
 	return entity.User{
 		ID:      u.ID,
 		Name:    u.Name,
@@ -26,27 +26,27 @@ func toEntityUser(u DBUserEntity) entity.User {
 	}
 }
 
-// toDBUserEntity converts an entity.User to a DBUserEntity
-func toDBUserEntity(u entity.User) DBUserEntity {
-	return DBUserEntity{
+// toUserDBEntity converts an entity.User to a UserDBEntity
+func toUserDBEntity(u entity.User) UserDBEntity {
+	return UserDBEntity{
 		ID:      u.ID,
 		Name:    u.Name,
 		Surname: u.Surname,
 	}
 }
 
-type User struct {
+type UserDB struct {
 	DB *gorm.DB
 }
 
-// NewUser creates a new instance of repository.User
-func NewUser(DB *gorm.DB) repository.User {
-	return &User{DB}
+// NewUserDB creates a new instance of repository.UserDB
+func NewUserDB(DB *gorm.DB) repository.User {
+	return &UserDB{DB}
 }
 
 // FindAll returns all users
-func (r *User) FindAll(ctx context.Context) ([]entity.User, error) {
-	var userEntities []DBUserEntity
+func (r *UserDB) FindAll(ctx context.Context) ([]entity.User, error) {
+	var userEntities []UserDBEntity
 	err := r.DB.Find(&userEntities).Error
 
 	users := make([]entity.User, 0, len(userEntities))
@@ -58,34 +58,34 @@ func (r *User) FindAll(ctx context.Context) ([]entity.User, error) {
 }
 
 // FindByID returns a user by ID
-func (r *User) FindByID(ctx context.Context, id uint) (entity.User, error) {
-	var userEntity DBUserEntity
+func (r *UserDB) FindByID(ctx context.Context, id uint) (entity.User, error) {
+	var userEntity UserDBEntity
 	err := r.DB.First(&userEntity, id).Error
 
 	return toEntityUser(userEntity), err
 }
 
 // Create creates a user
-func (r *User) Create(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *UserDB) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	return r.save(ctx, user)
 }
 
 // Modify modifies a user
-func (r *User) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+func (r *UserDB) Modify(ctx context.Context, user entity.User) (entity.User, error) {
 	return r.save(ctx, user)
 }
 
 // save saves a user
-func (r *User) save(ctx context.Context, user entity.User) (entity.User, error) {
-	userEntity := toDBUserEntity(user)
+func (r *UserDB) save(ctx context.Context, user entity.User) (entity.User, error) {
+	userEntity := toUserDBEntity(user)
 	err := r.DB.Save(&userEntity).Error
 
 	return toEntityUser(userEntity), err
 }
 
 // Delete deletes a user
-func (r *User) Delete(ctx context.Context, user entity.User) error {
-	userEntity := toDBUserEntity(user)
+func (r *UserDB) Delete(ctx context.Context, user entity.User) error {
+	userEntity := toUserDBEntity(user)
 	err := r.DB.Delete(&userEntity).Error
 
 	return err
