@@ -10,6 +10,11 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/handler"
 )
 
+const (
+	usersPath   = "users"
+	usersPathID = usersPath + "/:id"
+)
+
 type Server struct {
 	engine *gin.Engine
 }
@@ -29,10 +34,11 @@ func NewServer(user *handler.UserAPI) *Server {
 	// Auth middleware
 	api := engine.Group("/api", middleware.Authorization)
 
-	api.GET("users", user.FindAll)
-	api.GET("users/:id", user.FindByID)
-	api.POST("users", user.Save)
-	api.DELETE("users/:id", user.Delete)
+	api.GET(usersPath, user.FindAll)
+	api.GET(usersPathID, user.FindByID)
+	api.POST(usersPath, user.Create)
+	api.PUT(usersPathID, user.Modify)
+	api.DELETE(usersPathID, user.Delete)
 
 	return &Server{engine: engine}
 }

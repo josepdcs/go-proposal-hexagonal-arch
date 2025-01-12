@@ -102,7 +102,7 @@ func (h *UserAPI) FindByID(c *gin.Context) {
 	}
 }
 
-func (h *UserAPI) Save(c *gin.Context) {
+func (h *UserAPI) Create(c *gin.Context) {
 	var user entity.User
 
 	if err := c.BindJSON(&user); err != nil {
@@ -111,6 +111,32 @@ func (h *UserAPI) Save(c *gin.Context) {
 	}
 
 	user, err := h.create.Create(c.Request.Context(), user)
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusNotFound)
+	} else {
+		response := Response{}
+		err = copier.Copy(&response, &user)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": errBuildResponseTxt,
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, response)
+	}
+}
+
+func (h *UserAPI) Modify(c *gin.Context) {
+	var user entity.User
+
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	user, err := h.modify.Modify(c.Request.Context(), user)
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)

@@ -35,6 +35,9 @@ deps: ## Install dependencies
 	$(GOCMD) get -u -t -v ./...
 	$(GOCMD) mod tidy
 
+mod-tidy: ## Tidy Go module
+	$(GOCMD) mod tidy
+
 deps-cleancache: ## Clear cache in Go module
 	$(GOCMD) clean -modcache
 

@@ -17,24 +17,6 @@ type UserDBEntity struct {
 	gorm.Model
 }
 
-// toEntityUser converts a UserDBEntity to an entity.User
-func toEntityUser(u UserDBEntity) entity.User {
-	return entity.User{
-		ID:      u.ID,
-		Name:    u.Name,
-		Surname: u.Surname,
-	}
-}
-
-// toUserDBEntity converts an entity.User to a UserDBEntity
-func toUserDBEntity(u entity.User) UserDBEntity {
-	return UserDBEntity{
-		ID:      u.ID,
-		Name:    u.Name,
-		Surname: u.Surname,
-	}
-}
-
 type UserDB struct {
 	DB *gorm.DB
 }
@@ -51,7 +33,7 @@ func (r *UserDB) FindAll(ctx context.Context) ([]entity.User, error) {
 
 	users := make([]entity.User, 0, len(userEntities))
 	for _, e := range userEntities {
-		users = append(users, toEntityUser(e))
+		users = append(users, e.toEntityUser())
 	}
 
 	return users, err
@@ -62,7 +44,7 @@ func (r *UserDB) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	var userEntity UserDBEntity
 	err := r.DB.First(&userEntity, id).Error
 
-	return toEntityUser(userEntity), err
+	return userEntity.toEntityUser(), err
 }
 
 // Create creates a user
@@ -77,15 +59,17 @@ func (r *UserDB) Modify(ctx context.Context, user entity.User) (entity.User, err
 
 // save saves a user
 func (r *UserDB) save(ctx context.Context, user entity.User) (entity.User, error) {
-	userEntity := toUserDBEntity(user)
+	userEntity := UserDBEntity{}
+	userEntity = userEntity.fromEntityUser(user)
 	err := r.DB.Save(&userEntity).Error
 
-	return toEntityUser(userEntity), err
+	return userEntity.toEntityUser(), err
 }
 
 // Delete deletes a user
 func (r *UserDB) Delete(ctx context.Context, user entity.User) error {
-	userEntity := toUserDBEntity(user)
+	userEntity := UserDBEntity{}
+	userEntity = userEntity.fromEntityUser(user)
 	err := r.DB.Delete(&userEntity).Error
 
 	return err
