@@ -1,6 +1,6 @@
-# My proposal for a hexagonal architecture in Go with Gin
+# My proposal for a hexagonal architecture in Go
 
-**This is a proposal for implementing a hexagonal architecture in Go using the Gin framework.**
+**This is a proposal for implementing a hexagonal architecture in Go using the most popular frameworks and libs.**
 
 The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Gin.
 
