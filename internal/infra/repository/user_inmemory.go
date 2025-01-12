@@ -21,17 +21,17 @@ type UserInMemoryEntity struct {
 
 // UserInMemory represents a user repository in the in-memory database
 type UserInMemory struct {
-	data sync.Map
+	DB sync.Map
 }
 
 // NewUserInMemory creates a new instance of repository.UserInMemory
 func NewUserInMemory() repository.User {
 	u := &UserInMemory{}
 
-	// Add some initial data
-	u.data.Store(1, UserInMemoryEntity{ID: 1, Name: "John", Surname: "Doe"})
-	u.data.Store(2, UserInMemoryEntity{ID: 2, Name: "Jane", Surname: "Doe"})
-	u.data.Store(3, UserInMemoryEntity{ID: 3, Name: "Alice", Surname: "Smith"})
+	// Add some initial DB
+	u.DB.Store(1, UserInMemoryEntity{ID: 1, Name: "John", Surname: "Doe"})
+	u.DB.Store(2, UserInMemoryEntity{ID: 2, Name: "Jane", Surname: "Doe"})
+	u.DB.Store(3, UserInMemoryEntity{ID: 3, Name: "Alice", Surname: "Smith"})
 
 	return u
 }
@@ -40,7 +40,7 @@ func NewUserInMemory() repository.User {
 func (r *UserInMemory) FindAll(ctx context.Context) ([]entity.User, error) {
 	var userEntities []UserInMemoryEntity
 	// get all users from the in-memory database
-	r.data.Range(func(key, value interface{}) bool {
+	r.DB.Range(func(key, value interface{}) bool {
 		userEntities = append(userEntities, value.(UserInMemoryEntity))
 		return true
 	})
@@ -57,7 +57,7 @@ func (r *UserInMemory) FindAll(ctx context.Context) ([]entity.User, error) {
 func (r *UserInMemory) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	var userEntity UserInMemoryEntity
 	// get the user by ID from the in-memory database
-	value, ok := r.data.Load(id)
+	value, ok := r.DB.Load(id)
 	if !ok {
 		return entity.User{}, ErrUserNotFound
 	}
@@ -79,14 +79,14 @@ func (r *UserInMemory) Modify(ctx context.Context, user entity.User) (entity.Use
 // save saves a user
 func (r *UserInMemory) save(ctx context.Context, user entity.User) (entity.User, error) {
 	userEntity := UserInMemoryEntity{}
-	r.data.Store(user.ID, userEntity.fromEntityUser(user))
+	r.DB.Store(user.ID, userEntity.fromEntityUser(user))
 
 	return userEntity.toEntityUser(), nil
 }
 
 // Delete deletes a user
 func (r *UserInMemory) Delete(ctx context.Context, user entity.User) error {
-	r.data.Delete(user.ID)
+	r.DB.Delete(user.ID)
 
 	return nil
 }
