@@ -43,7 +43,7 @@ Additional commands:
 
 ```bash
 ➔ make help
-build                          Compile the code, build Executable File
+build                          Generate wire_gen.go && Compile the code, build Executable File
 run                            Start application
 test                           Run tests
 test-coverage                  Run tests and generate coverage file
