@@ -1,4 +1,4 @@
-# My proposal for a hexagonal architecture in Go
+# Yet another proposal for a hexagonal architecture in Go
 
 **This is a proposal for implementing a hexagonal architecture in Go using the most popular frameworks and libs.**
 

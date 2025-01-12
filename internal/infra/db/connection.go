@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/config"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infraestructure/repository"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infra/repository"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
