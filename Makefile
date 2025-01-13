@@ -43,7 +43,7 @@ deps-cleancache: ## Clear cache in Go module
 
 wire: ## Generate wire_gen.go
 	$(info $(M) Running Google Wire...)
-	@cd internal/api/server/di && wire
+	@cd internal/infrastructure/server/di && wire
 
 swag: ## Generate swagger docs
 	$(info $(M) Running Swag...)

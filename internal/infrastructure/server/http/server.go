@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	swagger "github.com/swaggo/gin-swagger"
-	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/middleware"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/middleware"
 
 	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/handler"
