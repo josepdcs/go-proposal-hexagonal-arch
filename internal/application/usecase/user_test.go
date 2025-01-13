@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infra/repository"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
 )
 
-func TestUserFindAll_FindAll(t *testing.T) {
+func TestUserFinderAll_Find(t *testing.T) {
 	tests := []struct {
 		name  string
 		given func() *repository.UserMock
@@ -33,7 +33,7 @@ func TestUserFindAll_FindAll(t *testing.T) {
 				return m
 			},
 			when: func(userMock *repository.UserMock) ([]entity.User, error) {
-				return NewUserFindAll(userMock).FindAll(context.Background())
+				return NewUserFinderAll(userMock).Find(context.Background())
 			},
 			then: func(users []entity.User, err error) {
 				assert.NoError(t, err)
@@ -60,7 +60,7 @@ func TestUserFindAll_FindAll(t *testing.T) {
 				return m
 			},
 			when: func(userMock *repository.UserMock) ([]entity.User, error) {
-				return NewUserFindAll(userMock).FindAll(context.Background())
+				return NewUserFinderAll(userMock).Find(context.Background())
 			},
 			then: func(users []entity.User, err error) {
 				assert.Error(t, err)

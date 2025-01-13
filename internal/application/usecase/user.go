@@ -8,92 +8,91 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
 )
 
-// UserFindAll use case
-type UserFindAll struct {
+// UserFinderAll use case
+type UserFinderAll struct {
 	user repository.User
 }
 
-// NewUserFindAll creates a new usecase.UserFindAll instance
-func NewUserFindAll(user repository.User) usecase.UserFindAll {
-	return &UserFindAll{
+// NewUserFinderAll creates a new usecase.UserFinderAll instance
+func NewUserFinderAll(user repository.User) usecase.UserFinderAll {
+	return &UserFinderAll{
 		user: user,
 	}
 }
 
-// FindAll returns all users
-func (u *UserFindAll) FindAll(ctx context.Context) ([]entity.User, error) {
+// Find returns all users or an error if something goes wrong
+func (u *UserFinderAll) Find(ctx context.Context) ([]entity.User, error) {
 	users, err := u.user.FindAll(ctx)
 	return users, err
 }
 
-// UserFindByID use case
-type UserFindByID struct {
+// UserFinderByID use case
+type UserFinderByID struct {
 	user repository.User
 }
 
-// NewUserFindByID creates a new usecase.UserFindByID instance
-func NewUserFindByID(user repository.User) usecase.UserFindByID {
-	return &UserFindByID{
+// NewUserFinderByID creates a new usecase.UserFinderByID instance
+func NewUserFinderByID(user repository.User) usecase.UserFinderByID {
+	return &UserFinderByID{
 		user: user,
 	}
 }
 
-// FindByID returns a user by ID
-func (u *UserFindByID) FindByID(ctx context.Context, id uint) (entity.User, error) {
+// Find returns a user by ID or an error if something goes wrong
+func (u *UserFinderByID) Find(ctx context.Context, id uint) (entity.User, error) {
 	user, err := u.user.FindByID(ctx, id)
 	return user, err
 }
 
-// UserCreate use case
-type UserCreate struct {
+// UserCreator defines the use case for creating a user
+type UserCreator struct {
 	user repository.User
 }
 
-// NewUserCreate creates a new usecase.UserCreate instance
-func NewUserCreate(user repository.User) usecase.UserCreate {
-	return &UserCreate{
+// NewUserCreator creates a new usecase.UserCreator instance
+func NewUserCreator(user repository.User) usecase.UserCreator {
+	return &UserCreator{
 		user: user,
 	}
 }
 
-// Create creates a new user
-func (u *UserCreate) Create(ctx context.Context, user entity.User) (entity.User, error) {
+// Create creates a user and returns the created user or an error if something goes wrong
+func (u *UserCreator) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	user, err := u.user.Create(ctx, user)
 	return user, err
 }
 
-// UserModify use case
-type UserModify struct {
+// UserModifier defines the use case for modifying a user
+type UserModifier struct {
 	user repository.User
 }
 
-// NewUserModify creates a new usecase.UserModify instance
-func NewUserModify(user repository.User) usecase.UserModify {
-	return &UserModify{
+// NewUserModifier creates a new usecase.UserModifier instance
+func NewUserModifier(user repository.User) usecase.UserModifier {
+	return &UserModifier{
 		user: user,
 	}
 }
 
-// Modify modifies a user
-func (u *UserModify) Modify(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := u.user.Modify(ctx, user)
-	return user, err
+// Modify modifies a user and returns the modified user or an error if something goes wrong
+func (u *UserModifier) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+	return u.user.Modify(ctx, user)
 }
 
-// UserDelete use case
-type UserDelete struct {
+// UserDeleter defines the use case for deleting a user
+type UserDeleter struct {
 	user repository.User
 }
 
-// NewUserDelete creates a new usecase.UserDelete instance
-func NewUserDelete(user repository.User) usecase.UserDelete {
-	return &UserDelete{
+// NewUserDeleter creates a new usecase.UserDeleter instance
+func NewUserDeleter(user repository.User) usecase.UserDeleter {
+	return &UserDeleter{
 		user: user,
 	}
 }
 
-// Delete deletes a user
-func (u *UserDelete) Delete(ctx context.Context, user entity.User) error {
+// Delete deletes a user and returns an error if something goes wrong
+func (u *UserDeleter) Delete(ctx context.Context, user entity.User) error {
 	err := u.user.Delete(ctx, user)
 	return err
 }

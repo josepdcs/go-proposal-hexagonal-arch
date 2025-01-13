@@ -14,11 +14,11 @@ const errBuildResponseTxt = "cannot build response"
 
 // UserAPI encapsulates the user use cases.
 type UserAPI struct {
-	findAll  usecase.UserFindAll
-	findByID usecase.UserFindByID
-	create   usecase.UserCreate
-	modify   usecase.UserModify
-	delete   usecase.UserDelete
+	findAll  usecase.UserFinderAll
+	findByID usecase.UserFinderByID
+	create   usecase.UserCreator
+	modify   usecase.UserModifier
+	delete   usecase.UserDeleter
 }
 
 type Response struct {
@@ -29,11 +29,11 @@ type Response struct {
 
 // NewUserAPI creates a new UserAPI.
 func NewUserAPI(
-	findAll usecase.UserFindAll,
-	findByID usecase.UserFindByID,
-	create usecase.UserCreate,
-	modify usecase.UserModify,
-	delete usecase.UserDelete,
+	findAll usecase.UserFinderAll,
+	findByID usecase.UserFinderByID,
+	create usecase.UserCreator,
+	modify usecase.UserModifier,
+	delete usecase.UserDeleter,
 ) *UserAPI {
 	return &UserAPI{
 		findAll:  findAll,
@@ -54,7 +54,7 @@ func NewUserAPI(
 // @Router /api/users [get]
 // @response 200 {object} []Response "OK"
 func (h *UserAPI) FindAll(c *gin.Context) {
-	users, err := h.findAll.FindAll(c.Request.Context())
+	users, err := h.findAll.Find(c.Request.Context())
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -84,7 +84,7 @@ func (h *UserAPI) FindByID(c *gin.Context) {
 		return
 	}
 
-	user, err := h.findByID.FindByID(c.Request.Context(), uint(id))
+	user, err := h.findByID.Find(c.Request.Context(), uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
@@ -166,7 +166,7 @@ func (h *UserAPI) Delete(c *gin.Context) {
 	}
 
 	ctx := c.Request.Context()
-	user, err := h.findByID.FindByID(ctx, uint(id))
+	user, err := h.findByID.Find(ctx, uint(id))
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)

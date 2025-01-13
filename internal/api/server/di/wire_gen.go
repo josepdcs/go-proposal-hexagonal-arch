@@ -11,19 +11,19 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/config"
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/http"
 	"github.com/thnkrn/go-gin-clean-arch/internal/application/usecase"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infra/repository"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
 )
 
 // Injectors from wire.go:
 
 func InitializeAPI(cfg config.Config) (*http.Server, error) {
 	user := repository.NewUserInMemory()
-	userFindAll := usecase.NewUserFindAll(user)
-	userFindByID := usecase.NewUserFindByID(user)
-	userCreate := usecase.NewUserCreate(user)
-	userModify := usecase.NewUserModify(user)
-	userDelete := usecase.NewUserDelete(user)
-	userAPI := handler.NewUserAPI(userFindAll, userFindByID, userCreate, userModify, userDelete)
+	userFinderAll := usecase.NewUserFinderAll(user)
+	userFinderByID := usecase.NewUserFinderByID(user)
+	userCreator := usecase.NewUserCreator(user)
+	userModifier := usecase.NewUserModifier(user)
+	userDeleter := usecase.NewUserDeleter(user)
+	userAPI := handler.NewUserAPI(userFinderAll, userFinderByID, userCreator, userModifier, userDeleter)
 	server := http.NewServer(userAPI)
 	return server, nil
 }

@@ -38,7 +38,7 @@ var doc = `{
                     "users"
                 ],
                 "summary": "Get all users",
-                "operationId": "FindAll",
+                "operationId": "Find",
                 "responses": {
                     "200": {
                         "description": "OK",

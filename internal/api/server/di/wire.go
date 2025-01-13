@@ -9,18 +9,18 @@ import (
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/config"
 	"github.com/thnkrn/go-gin-clean-arch/internal/api/server/http"
 	"github.com/thnkrn/go-gin-clean-arch/internal/application/usecase"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infra/repository"
+	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
 )
 
 func InitializeAPI(cfg config.Config) (*http.Server, error) {
 	wire.Build(
 		//db.ConnectDatabase,
 		repository.NewUserInMemory,
-		usecase.NewUserFindAll,
-		usecase.NewUserFindByID,
-		usecase.NewUserCreate,
-		usecase.NewUserModify,
-		usecase.NewUserDelete,
+		usecase.NewUserFinderAll,
+		usecase.NewUserFinderByID,
+		usecase.NewUserCreator,
+		usecase.NewUserModifier,
+		usecase.NewUserDeleter,
 		handler.NewUserAPI,
 		http.NewServer,
 	)
