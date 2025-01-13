@@ -40,8 +40,7 @@ func NewUserFinderByID(user repository.User) usecase.UserFinderByID {
 
 // Find returns a user by ID or an error if something goes wrong
 func (u *UserFinderByID) Find(ctx context.Context, id uint) (entity.User, error) {
-	user, err := u.user.FindByID(ctx, id)
-	return user, err
+	return u.user.FindByID(ctx, id)
 }
 
 // UserCreator defines the use case for creating a user
@@ -58,8 +57,7 @@ func NewUserCreator(user repository.User) usecase.UserCreator {
 
 // Create creates a user and returns the created user or an error if something goes wrong
 func (u *UserCreator) Create(ctx context.Context, user entity.User) (entity.User, error) {
-	user, err := u.user.Create(ctx, user)
-	return user, err
+	return u.user.Create(ctx, user)
 }
 
 // UserModifier defines the use case for modifying a user
@@ -93,6 +91,5 @@ func NewUserDeleter(user repository.User) usecase.UserDeleter {
 
 // Delete deletes a user and returns an error if something goes wrong
 func (u *UserDeleter) Delete(ctx context.Context, user entity.User) error {
-	err := u.user.Delete(ctx, user)
-	return err
+	return u.user.Delete(ctx, user)
 }
