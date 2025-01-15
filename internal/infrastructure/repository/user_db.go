@@ -17,6 +17,11 @@ type UserDBEntity struct {
 	gorm.Model
 }
 
+// TableName overrides the table name used by UserDBEntity to `users`
+func (UserDBEntity) TableName() string {
+	return "users"
+}
+
 type UserDB struct {
 	DB *gorm.DB
 }
@@ -62,15 +67,17 @@ func (r *UserDB) save(ctx context.Context, user entity.User) (entity.User, error
 	userEntity := UserDBEntity{}
 	userEntity = userEntity.fromEntityUser(user)
 	err := r.DB.Save(&userEntity).Error
+	if err != nil {
+		return entity.User{}, err
+	}
 
-	return userEntity.toEntityUser(), err
+	return userEntity.toEntityUser(), nil
 }
 
 // Delete deletes a user
 func (r *UserDB) Delete(ctx context.Context, user entity.User) error {
 	userEntity := UserDBEntity{}
 	userEntity = userEntity.fromEntityUser(user)
-	err := r.DB.Delete(&userEntity).Error
 
-	return err
+	return r.DB.Delete(&userEntity).Error
 }

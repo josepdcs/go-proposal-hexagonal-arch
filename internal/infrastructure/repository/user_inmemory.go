@@ -29,9 +29,9 @@ func NewUserInMemory() repository.User {
 	u := &UserInMemory{}
 
 	// Add some initial DB
-	u.DB.Store(1, UserInMemoryEntity{ID: 1, Name: "John", Surname: "Doe"})
-	u.DB.Store(2, UserInMemoryEntity{ID: 2, Name: "Jane", Surname: "Doe"})
-	u.DB.Store(3, UserInMemoryEntity{ID: 3, Name: "Alice", Surname: "Smith"})
+	u.DB.Store(uint(1), UserInMemoryEntity{ID: 1, Name: "John", Surname: "Doe"})
+	u.DB.Store(uint(2), UserInMemoryEntity{ID: 2, Name: "Jane", Surname: "Doe"})
+	u.DB.Store(uint(3), UserInMemoryEntity{ID: 3, Name: "Alice", Surname: "Smith"})
 
 	return u
 }
@@ -68,18 +68,32 @@ func (r *UserInMemory) FindByID(ctx context.Context, id uint) (entity.User, erro
 
 // Create creates a user
 func (r *UserInMemory) Create(ctx context.Context, user entity.User) (entity.User, error) {
+	// get last ID from memory
+	lastID := uint(0)
+	r.DB.Range(func(key, value interface{}) bool {
+		ID := key.(uint)
+		if ID > lastID {
+			lastID = ID
+		}
+		return true
+	})
+	user.ID = lastID + 1
 	return r.save(ctx, user)
 }
 
 // Modify modifies a user
 func (r *UserInMemory) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+	_, err := r.FindByID(ctx, user.ID)
+	if err != nil {
+		return entity.User{}, err
+	}
 	return r.save(ctx, user)
 }
 
 // save saves a user
 func (r *UserInMemory) save(ctx context.Context, user entity.User) (entity.User, error) {
-	userEntity := UserInMemoryEntity{}
-	r.DB.Store(user.ID, userEntity.fromEntityUser(user))
+	userEntity := UserInMemoryEntity{}.fromEntityUser(user)
+	r.DB.Store(user.ID, userEntity)
 
 	return userEntity.toEntityUser(), nil
 }
