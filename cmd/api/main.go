@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/config"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/di"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/di"
 )
 
 func main() {

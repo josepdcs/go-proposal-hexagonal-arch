@@ -7,11 +7,11 @@
 package di
 
 import (
-	"github.com/thnkrn/go-gin-clean-arch/internal/api/handler"
-	"github.com/thnkrn/go-gin-clean-arch/internal/application/usecase"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/config"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/http"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/application/usecase"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/repository"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/http"
 )
 
 // Injectors from wire.go:

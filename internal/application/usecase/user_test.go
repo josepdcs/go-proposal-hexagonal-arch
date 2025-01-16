@@ -6,11 +6,11 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/repository"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
 )
 
 func TestUserFinderAll_Find(t *testing.T) {

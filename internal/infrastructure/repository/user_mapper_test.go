@@ -3,8 +3,8 @@ package repository
 import (
 	"testing"
 
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
 )
 
 func TestUserInMemoryEntity_toEntityUser(t *testing.T) {

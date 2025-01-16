@@ -4,7 +4,7 @@
 
 The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Gin.
 
-This project is based on and forked from [go-gin-clean-arch](https://github.com/thnkrn/go-gin-clean-arch)
+This project is based on and forked from [go-gin-clean-arch](https://github.com/josepdcs/go-proposal-hexagonal-arch)
 
 In this project, I have aimed to adhere to Golang naming conventions and best practices, including:
 - [Effective Go](https://golang.org/doc/effective_go.html)
@@ -13,7 +13,7 @@ In this project, I have aimed to adhere to Golang naming conventions and best pr
 
 ## Template Structure
 
-- [Gin](github.com/gin-gonic/gin) is a web framework written in Go (Golang). It features a martini-like API with performance that is up to 40 times faster thanks to httprouter. If you need performance and good productivity, you will love Gin.
+- [Fiber](https://gofiber.io/) is a Go web framework built on top of Fasthttp, the fastest HTTP engine for Go. It's designed to ease things up for fast development with zero memory allocation and performance in mind.
 - [JWT](github.com/golang-jwt/jwt) A go (or 'golang' for search engine friendliness) implementation of JSON Web Tokens.
 - [GORM](https://gorm.io/index.html) with [PostgresSQL](https://gorm.io/docs/connecting_to_the_database.html#PostgreSQL)The fantastic ORM library for Golang aims to be developer friendly.
 - [Wire](https://github.com/google/wire) is a code generation tool that automates connecting components using dependency injection.

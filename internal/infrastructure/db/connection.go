@@ -3,8 +3,8 @@ package db
 import (
 	"fmt"
 
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/repository"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/repository"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

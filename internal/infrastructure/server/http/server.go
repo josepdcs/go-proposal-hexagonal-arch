@@ -1,13 +1,10 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
-	swaggerfiles "github.com/swaggo/files"
-	swagger "github.com/swaggo/gin-swagger"
-	"github.com/thnkrn/go-gin-clean-arch/internal/infrastructure/server/middleware"
-
-	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
-	"github.com/thnkrn/go-gin-clean-arch/internal/api/handler"
+	"github.com/gofiber/fiber/v2"
+	_ "github.com/josepdcs/go-proposal-hexagonal-arch/cmd/api/docs"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/middleware"
 )
 
 const (
@@ -16,33 +13,30 @@ const (
 )
 
 type Server struct {
-	engine *gin.Engine
+	app *fiber.App
 }
 
 func NewServer(user *handler.UserAPI) *Server {
-	engine := gin.New()
-
-	// Use logger from Gin
-	engine.Use(gin.Logger())
+	app := fiber.New()
 
 	// Swagger docs
-	engine.GET("/swagger/*any", swagger.WrapHandler(swaggerfiles.Handler))
+	//app.Get("/swagger/*any", swagger.WrapHandler(swaggerfiles.Handler))
 
 	// Request JWT
-	engine.POST("/login", handler.Login)
+	app.Post("/login", handler.Login)
 
 	// Auth middleware
-	api := engine.Group("/api", middleware.Authorization)
+	api := app.Group("/api", middleware.Authorization)
 
-	api.GET(usersPath, user.FindAll)
-	api.GET(usersPathID, user.FindByID)
-	api.POST(usersPath, user.Create)
-	api.PUT(usersPathID, user.Modify)
-	api.DELETE(usersPathID, user.Delete)
+	api.Get(usersPath, user.FindAll)
+	api.Get(usersPathID, user.FindByID)
+	api.Post(usersPath, user.Create)
+	api.Put(usersPathID, user.Modify)
+	api.Delete(usersPathID, user.Delete)
 
-	return &Server{engine: engine}
+	return &Server{app: app}
 }
 
 func (sh *Server) Start() {
-	sh.engine.Run(":3000")
+	sh.app.Listen(":8080")
 }

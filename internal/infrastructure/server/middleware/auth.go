@@ -5,19 +5,22 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func Authorization(c *gin.Context) {
-	s := c.Request.Header.Get("Authorization")
+func Authorization(c *fiber.Ctx) error {
+	s := c.Get("Authorization")
 
 	token := strings.TrimPrefix(s, "Bearer ")
 
 	if err := validateToken(token); err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
+		return c.Status(http.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid token",
+		})
 	}
+
+	return c.Next()
 }
 
 func validateToken(token string) error {

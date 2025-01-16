@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
+import "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
 
 // toEntityUser converts a UserDBEntity to an entity.User
 func (ub UserDBEntity) toEntityUser() entity.User {

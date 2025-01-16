@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/repository"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/repository"
 )
 
 func TestUserDB_FindAll(t *testing.T) {

@@ -4,13 +4,10 @@ import (
 	"context"
 	"sync"
 
-	"github.com/pkg/errors"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/repository"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/repository"
 )
-
-// ErrUserNotFound is the error returned when a user is not found
-var ErrUserNotFound = errors.New("user not found")
 
 // UserInMemoryEntity represents a user entity in the in-memory database
 type UserInMemoryEntity struct {
@@ -59,7 +56,7 @@ func (r *UserInMemory) FindByID(ctx context.Context, id uint) (entity.User, erro
 	// get the user by ID from the in-memory database
 	value, ok := r.DB.Load(id)
 	if !ok {
-		return entity.User{}, ErrUserNotFound
+		return entity.User{}, errors.ErrUserNotFound
 	}
 
 	userEntity = value.(UserInMemoryEntity)

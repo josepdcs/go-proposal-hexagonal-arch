@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/repository"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/usecase"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/repository"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/usecase"
 )
 
 // UserFinderAll use case

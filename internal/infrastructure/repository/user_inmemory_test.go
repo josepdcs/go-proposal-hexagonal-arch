@@ -6,8 +6,8 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
 	"github.com/stretchr/testify/assert"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
 )
 
 func TestUserInMemory_FindAll(t *testing.T) {

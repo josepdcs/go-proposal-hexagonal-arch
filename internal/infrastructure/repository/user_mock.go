@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/repository"
 	"github.com/stretchr/testify/mock"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/repository"
 )
 
 // UserMock is a mock implementation of repository.User by using testify mock.Mock

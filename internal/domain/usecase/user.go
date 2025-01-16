@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/thnkrn/go-gin-clean-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
 )
 
 // UserFinderAll defines the use case for finding all users
