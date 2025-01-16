@@ -2,7 +2,7 @@
 
 **This is a proposal for implementing a hexagonal architecture in Go using the most popular frameworks and libs.**
 
-The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Gin.
+The primary goal of this project is to demonstrate how to structure a Go application with a hexagonal architecture using Fiber.
 
 This project is based on and forked from [go-gin-clean-arch](https://github.com/josepdcs/go-proposal-hexagonal-arch)
 
