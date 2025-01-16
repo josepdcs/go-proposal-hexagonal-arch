@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	c, err := config.Load()
+	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal("cannot load c: ", err)
 	}
 
-	server, err := di.InitializeAPI(c)
+	server, err := di.InitializeAPI(cfg)
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	} else {

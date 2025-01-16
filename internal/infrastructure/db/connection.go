@@ -10,12 +10,19 @@ import (
 )
 
 func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s", cfg.DBHost, cfg.DBUser, cfg.DBName, cfg.DBPort, cfg.DBPassword)
-	db, dbErr := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
+	psqlInfo := fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s", cfg.DB.Host, cfg.DB.User, cfg.DB.Name, cfg.DB.Port, cfg.DB.Password)
+	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&repository.UserDBEntity{})
+	if err != nil {
+		return nil, err
+	}
 
-	return db, dbErr
+	err = db.AutoMigrate(&repository.UserDBEntity{})
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

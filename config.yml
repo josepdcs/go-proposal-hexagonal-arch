@@ -1,0 +1,7 @@
+config:
+  db:
+    type: in-memory
+    user: ""
+    password: ""
+    host: ""
+    port: ""

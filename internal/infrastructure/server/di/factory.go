@@ -7,8 +7,9 @@ import (
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
 )
 
+// ResolveUserRepository resolves the user repository based on the configuration
 func ResolveUserRepository(cfg config.Config) (repository.User, error) {
-	if cfg.DBType != config.InMemoryDB {
+	if cfg.DB.Type != config.InMemoryDB {
 		DB, err := db.ConnectDatabase(cfg)
 		if err != nil {
 			return nil, err

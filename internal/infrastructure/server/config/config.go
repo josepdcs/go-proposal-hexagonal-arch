@@ -1,8 +1,10 @@
 package config
 
 import (
-	"github.com/go-playground/validator/v10"
-	"github.com/spf13/viper"
+	"github.com/knadh/koanf/parsers/yaml"
+	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -10,12 +12,16 @@ const (
 )
 
 type Config struct {
-	DBType     string `mapstructure:"DB_TYPE"`
-	DBHost     string `mapstructure:"DB_HOST"`
-	DBName     string `mapstructure:"DB_NAME"`
-	DBUser     string `mapstructure:"DB_USER"`
-	DBPort     string `mapstructure:"DB_PORT"`
-	DBPassword string `mapstructure:"DB_PASSWORD"`
+	DB DB `koanf:"db"`
+}
+
+type DB struct {
+	Type     string `koanf:"type"`
+	Host     string `koanf:"host"`
+	Name     string `koanf:"name"`
+	User     string `koanf:"user"`
+	Port     string `koanf:"port"`
+	Password string `koanf:"password"`
 }
 
 var envs = []string{
@@ -25,26 +31,25 @@ var envs = []string{
 func Load() (Config, error) {
 	var config Config
 
-	viper.AddConfigPath("./")
-	viper.SetConfigFile(".env")
-	viper.ReadInConfig()
+	k := koanf.New(".")
+	parser := yaml.Parser()
 
-	for _, env := range envs {
-		if err := viper.BindEnv(env); err != nil {
-			return config, err
-		}
+	// Load YML config.
+	if err := k.Load(file.Provider("config.yml"), parser); err != nil {
+		return config, errors.Wrapf(err, "error loading config: %v", err)
 	}
 
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := k.Load(file.Provider("config_override.yml"), parser); err != nil {
+		return config, errors.Wrapf(err, "error loading config: %v", err)
+	}
+
+	err := k.Unmarshal("config", &config)
+	if err != nil {
 		return config, err
 	}
 
-	if err := validator.New().Struct(&config); err != nil {
-		return config, err
-	}
-
-	if config.DBType == "" {
-		config.DBType = InMemoryDB
+	if config.DB.Type == "" {
+		config.DB.Type = InMemoryDB
 	}
 
 	return config, nil

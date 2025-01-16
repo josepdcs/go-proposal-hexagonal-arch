@@ -1,0 +1,8 @@
+config:
+  db:
+    type: postgres
+    name: hexagonal
+    user: postgres
+    password: postgres
+    host: localhost
+    port: 5432
