@@ -73,6 +73,16 @@ func (h *UserAPI) FindAll(c *fiber.Ctx) error {
 	}
 }
 
+// FindByID godoc
+// @summary Get a user by ID
+// @description Get a user by ID
+// @tags users
+// @security ApiKeyAuth
+// @id FindByID
+// @produce json
+// @param id path int true "User ID"
+// @Router /api/users/{id} [get]
+// @response 200 {object} Response "OK"
 func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
@@ -99,6 +109,17 @@ func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 	}
 }
 
+// Create godoc
+// @summary Create a user
+// @description Create a user
+// @tags users
+// @security ApiKeyAuth
+// @id Create
+// @accept json
+// @produce json
+// @param user body entity.User true "entity.User"
+// @Router /api/users [post]
+// @response 200 {object} Response "OK"
 func (h *UserAPI) Create(c *fiber.Ctx) error {
 	var user entity.User
 
@@ -127,6 +148,17 @@ func (h *UserAPI) Create(c *fiber.Ctx) error {
 	}
 }
 
+// Modify godoc
+// @summary Modify a user
+// @description Modify a user
+// @tags users
+// @security ApiKeyAuth
+// @id Modify
+// @accept json
+// @produce json
+// @param user body entity.User true "entity.User"
+// @Router /api/users [put]
+// @response 200 {object} Response "OK"
 func (h *UserAPI) Modify(c *fiber.Ctx) error {
 	var user entity.User
 
@@ -155,6 +187,15 @@ func (h *UserAPI) Modify(c *fiber.Ctx) error {
 	}
 }
 
+// Delete godoc
+// @summary Delete a user
+// @description Delete a user
+// @tags users
+// @security ApiKeyAuth
+// @id Delete
+// @param id path int true "User ID"
+// @Router /api/users/{id} [delete]
+// @response 200 {object} Response "OK"
 func (h *UserAPI) Delete(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 

@@ -2,9 +2,11 @@ package http
 
 import (
 	"github.com/gofiber/fiber/v2"
-	_ "github.com/josepdcs/go-proposal-hexagonal-arch/cmd/api/docs"
+	"github.com/gofiber/swagger"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/middleware"
+
+	_ "github.com/josepdcs/go-proposal-hexagonal-arch/cmd/api/docs"
 )
 
 const (
@@ -20,7 +22,7 @@ func NewServer(user *handler.UserAPI) *Server {
 	app := fiber.New()
 
 	// Swagger docs
-	//app.Get("/swagger/*any", swagger.WrapHandler(swaggerfiles.Handler))
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// Request JWT
 	app.Post("/login", handler.Login)

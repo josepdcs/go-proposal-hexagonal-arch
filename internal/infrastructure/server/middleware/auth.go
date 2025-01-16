@@ -1,12 +1,12 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/pkg/errors"
 )
 
 func Authorization(c *fiber.Ctx) error {
@@ -26,7 +26,7 @@ func Authorization(c *fiber.Ctx) error {
 func validateToken(token string) error {
 	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			return nil, errors.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
 
 		return []byte("secret"), nil
