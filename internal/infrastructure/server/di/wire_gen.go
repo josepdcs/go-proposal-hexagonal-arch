@@ -9,7 +9,6 @@ package di
 import (
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/application/usecase"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/repository"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/http"
 )
@@ -17,7 +16,10 @@ import (
 // Injectors from wire.go:
 
 func InitializeAPI(cfg config.Config) (*http.Server, error) {
-	user := repository.NewUserInMemory()
+	user, err := ResolveUserRepository(cfg)
+	if err != nil {
+		return nil, err
+	}
 	userFinderAll := usecase.NewUserFinderAll(user)
 	userFinderByID := usecase.NewUserFinderByID(user)
 	userCreator := usecase.NewUserCreator(user)

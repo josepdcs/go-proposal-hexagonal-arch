@@ -5,7 +5,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	InMemoryDB = "in_memory"
+)
+
 type Config struct {
+	DBType     string `mapstructure:"DB_TYPE"`
 	DBHost     string `mapstructure:"DB_HOST"`
 	DBName     string `mapstructure:"DB_NAME"`
 	DBUser     string `mapstructure:"DB_USER"`
@@ -36,6 +41,10 @@ func Load() (Config, error) {
 
 	if err := validator.New().Struct(&config); err != nil {
 		return config, err
+	}
+
+	if config.DBType == "" {
+		config.DBType = InMemoryDB
 	}
 
 	return config, nil
