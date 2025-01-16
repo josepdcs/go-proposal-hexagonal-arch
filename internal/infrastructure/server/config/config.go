@@ -24,10 +24,6 @@ type DB struct {
 	Password string `koanf:"password"`
 }
 
-var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD",
-}
-
 func Load() (Config, error) {
 	var config Config
 
