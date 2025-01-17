@@ -1,22 +1,13 @@
 package main
 
 import (
-	"log"
-
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/di"
+	"github.com/gofiber/fiber/v2/log"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/app"
 )
 
 func main() {
-	cfg, err := config.Load()
+	err := app.Start()
 	if err != nil {
-		log.Fatal("cannot load c: ", err)
-	}
-
-	server, err := di.InitializeAPI(cfg.DB)
-	if err != nil {
-		log.Fatal("cannot start server: ", err)
-	} else {
-		server.Start()
+		log.Fatal(err)
 	}
 }

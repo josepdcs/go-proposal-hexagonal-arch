@@ -39,6 +39,6 @@ func NewServer(user *handler.UserAPI) *Server {
 	return &Server{app: app}
 }
 
-func (sh *Server) Start() {
-	sh.app.Listen(":8080")
+func (sh *Server) Start() error {
+	return sh.app.Listen(":8080")
 }
