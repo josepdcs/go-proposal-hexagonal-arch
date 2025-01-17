@@ -11,7 +11,7 @@ import (
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/http"
 )
 
-func InitializeAPI(cfg config.Config) (*http.Server, error) {
+func InitializeAPI(cfg config.DB) (*http.Server, error) {
 	wire.Build(
 		ResolveUserRepository,
 		usecase.NewUserFinderAll,

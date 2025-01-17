@@ -9,8 +9,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
-	psqlInfo := fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s", cfg.DB.Host, cfg.DB.User, cfg.DB.Name, cfg.DB.Port, cfg.DB.Password)
+func ConnectDatabase(cfg config.DB) (*gorm.DB, error) {
+	psqlInfo := fmt.Sprintf("host=%s user=%s dbname=%s port=%s password=%s", cfg.Host, cfg.User, cfg.Name, cfg.Port, cfg.Password)
 	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{
 		SkipDefaultTransaction: true,
 	})

@@ -8,8 +8,8 @@ import (
 )
 
 // ResolveUserRepository resolves the user repository based on the configuration
-func ResolveUserRepository(cfg config.Config) (repository.User, error) {
-	if cfg.DB.Type != config.InMemoryDB {
+func ResolveUserRepository(cfg config.DB) (repository.User, error) {
+	if cfg.Type != config.InMemoryDB {
 		DB, err := db.ConnectDatabase(cfg)
 		if err != nil {
 			return nil, err

@@ -13,7 +13,7 @@ func main() {
 		log.Fatal("cannot load c: ", err)
 	}
 
-	server, err := di.InitializeAPI(cfg)
+	server, err := di.InitializeAPI(cfg.DB)
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	} else {

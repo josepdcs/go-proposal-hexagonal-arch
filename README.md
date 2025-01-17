@@ -18,7 +18,8 @@ In this project, I have aimed to adhere to Golang naming conventions and best pr
 - [GORM](https://gorm.io/index.html) with [PostgresSQL](https://gorm.io/docs/connecting_to_the_database.html#PostgreSQL)The fantastic ORM library for Golang aims to be developer friendly.
 - [Wire](https://github.com/google/wire) is a code generation tool that automates connecting components using dependency injection.
 - [Koanf](https://github.com/knadh/koanf) is a library for reading configuration from different sources in different formats in Go applications. It is a cleaner, lighter [alternative to spf13/viper](https://github.com/knadh/koanf#alternative-to-viper) with better abstractions and extensibility and far fewer dependencies..
-- [swag](https://github.com/swaggo/swag) converts Go annotations to Swagger Documentation 2.0 with [fiber-swagger](https://github.com/gofiber/swagger) and [swaggo files](github.com/swaggo/files)
+- [Swag](https://github.com/swaggo/swag) converts Go annotations to Swagger Documentation 2.0 with [fiber-swagger](https://github.com/gofiber/swagger) and [swaggo files](github.com/swaggo/files)
+- [Testify](https://github.com/stretchr/testify) is a set of packages that provide many tools for testifying that your code will behave as you intend. Features include: easy assertions, mocking, testing suite interfaces and functions, and a test runner.
 
 ## Using `go-proposal-hexagonal-arch` project
 

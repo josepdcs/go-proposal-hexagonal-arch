@@ -15,7 +15,7 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeAPI(cfg config.Config) (*http.Server, error) {
+func InitializeAPI(cfg config.DB) (*http.Server, error) {
 	user, err := ResolveUserRepository(cfg)
 	if err != nil {
 		return nil, err
