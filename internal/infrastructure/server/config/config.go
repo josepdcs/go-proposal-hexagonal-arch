@@ -56,10 +56,12 @@ func Load() (Config, error) {
 	if value, exists := os.LookupEnv(ConfigOverridePathEnv); exists {
 		configOverridePath = value
 	}
-	log.Debugf("Config override file path: %s", configOverridePath)
+	if configOverridePath != "" {
+		log.Debugf("Config override file path: %s", configOverridePath)
 
-	if err := k.Load(file.Provider(configOverridePath), parser); err != nil {
-		return config, errors.Wrapf(err, "error loading config: %v", err)
+		if err := k.Load(file.Provider(configOverridePath), parser); err != nil {
+			return config, errors.Wrapf(err, "error loading config: %v", err)
+		}
 	}
 
 	err := k.Unmarshal("config", &config)

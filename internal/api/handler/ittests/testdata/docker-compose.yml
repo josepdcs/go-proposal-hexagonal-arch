@@ -8,6 +8,9 @@ services:
       - '5432:5432'
     volumes:
       - db:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql.conf
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: -c config_file=/etc/postgresql.conf
 volumes:
   db:
     driver: local

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jinzhu/copier"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
 	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/usecase"
@@ -20,14 +19,32 @@ type UserAPI struct {
 	deleter    usecase.UserDeleter
 }
 
-type Response struct {
-	ID      uint   `copier:"must"`
-	Name    string `copier:"must"`
-	Surname string `copier:"must"`
+type UserDTO struct {
+	ID      uint   `json:"id"`
+	Name    string `json:"name"`
+	Surname string `json:"surname"`
 }
 
-type ErrorResponse struct {
+type ErrorDTO struct {
 	Error string `json:"error"`
+}
+
+// toEntityUser converts a UserDTO to an entity.User
+func (u UserDTO) toEntityUser() entity.User {
+	return entity.User{
+		ID:      u.ID,
+		Name:    u.Name,
+		Surname: u.Surname,
+	}
+}
+
+// toUserDTO concerts entity.User to UserDTO
+func toUserDTO(u entity.User) UserDTO {
+	return UserDTO{
+		ID:      u.ID,
+		Name:    u.Name,
+		Surname: u.Surname,
+	}
 }
 
 // NewUserAPI creates a new UserAPI.
@@ -55,19 +72,16 @@ func NewUserAPI(
 // @id FindAll
 // @produce json
 // @Router /api/users [get]
-// @response 200 {object} []Response "OK"
+// @response 200 {object} []UserDTO "OK"
 func (h *UserAPI) FindAll(c *fiber.Ctx) error {
 	users, err := h.finderAll.Find(c.UserContext())
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusNotFound)
 	} else {
-		response := make([]Response, 0, len(users))
-		err = copier.Copy(&response, &users)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
-				Error: errBuildResponseTxt,
-			})
+		response := make([]UserDTO, 0, len(users))
+		for _, user := range users {
+			response = append(response, toUserDTO(user))
 		}
 		return c.JSON(response)
 	}
@@ -82,12 +96,12 @@ func (h *UserAPI) FindAll(c *fiber.Ctx) error {
 // @produce json
 // @param id path int true "User ID"
 // @Router /api/users/{id} [get]
-// @response 200 {object} Response "OK"
+// @response 200 {object} UserDTO "OK"
 func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: "cannot parse id",
 		})
 	}
@@ -97,15 +111,7 @@ func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusNotFound)
 	} else {
-		response := Response{}
-		err = copier.Copy(&response, &user)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
-				Error: errBuildResponseTxt,
-			})
-		}
-
-		return c.JSON(response)
+		return c.JSON(toUserDTO(user))
 	}
 }
 
@@ -119,32 +125,24 @@ func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 // @produce json
 // @param user body entity.User true "entity.User"
 // @Router /api/users [post]
-// @response 200 {object} Response "OK"
+// @response 200 {object} UserDTO "OK"
 func (h *UserAPI) Create(c *fiber.Ctx) error {
-	var user entity.User
+	var userDTO UserDTO
 
-	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{
+	if err := c.BodyParser(&userDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(ErrorDTO{
 			Error: err.Error(),
 		})
 	}
 
-	user, err := h.creator.Create(c.UserContext(), user)
+	user, err := h.creator.Create(c.UserContext(), userDTO.toEntityUser())
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: "Cannot create user: " + err.Error(),
 		})
 	} else {
-		response := Response{}
-		err = copier.Copy(&response, &user)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
-				Error: errBuildResponseTxt,
-			})
-		}
-
-		return c.JSON(response)
+		return c.JSON(toUserDTO(user))
 	}
 }
 
@@ -158,32 +156,24 @@ func (h *UserAPI) Create(c *fiber.Ctx) error {
 // @produce json
 // @param user body entity.User true "entity.User"
 // @Router /api/users [put]
-// @response 200 {object} Response "OK"
+// @response 200 {object} UserDTO "OK"
 func (h *UserAPI) Modify(c *fiber.Ctx) error {
-	var user entity.User
+	var userDTO UserDTO
 
-	if err := c.BodyParser(&user); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(ErrorResponse{
+	if err := c.BodyParser(&userDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(ErrorDTO{
 			Error: err.Error(),
 		})
 	}
 
-	user, err := h.modifier.Modify(c.UserContext(), user)
+	user, err := h.modifier.Modify(c.UserContext(), userDTO.toEntityUser())
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: "Cannot modify user: " + err.Error(),
 		})
 	} else {
-		response := Response{}
-		err = copier.Copy(&response, &user)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
-				Error: errBuildResponseTxt,
-			})
-		}
-
-		return c.JSON(response)
+		return c.JSON(toUserDTO(user))
 	}
 }
 
@@ -195,12 +185,12 @@ func (h *UserAPI) Modify(c *fiber.Ctx) error {
 // @id Delete
 // @param id path int true "User ID"
 // @Router /api/users/{id} [delete]
-// @response 200 {object} Response "OK"
+// @response 200 {object} UserDTO "OK"
 func (h *UserAPI) Delete(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: "cannot parse id",
 		})
 	}
@@ -209,30 +199,28 @@ func (h *UserAPI) Delete(c *fiber.Ctx) error {
 
 	if err != nil {
 		if errors.Is(err, domerrors.ErrUserNotFound) {
-			return c.Status(fiber.StatusNotFound).JSON(ErrorResponse{
+			return c.Status(fiber.StatusNotFound).JSON(ErrorDTO{
 				Error: "User is not registered yet",
 			})
 		}
 
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: err.Error(),
 		})
 	}
 
 	if user == (entity.User{}) {
-		return c.Status(fiber.StatusNotFound).JSON(ErrorResponse{
+		return c.Status(fiber.StatusNotFound).JSON(ErrorDTO{
 			Error: "User is not registered yet",
 		})
 	}
 
 	err = h.deleter.Delete(c.UserContext(), user)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{
+		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
 			Error: "Cannot delete user: " + err.Error(),
 		})
 	}
 
-	return c.JSON(fiber.Map{
-		"message": "User deleted successfully",
-	})
+	return c.SendStatus(fiber.StatusNoContent)
 }

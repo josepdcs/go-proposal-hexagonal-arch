@@ -1,6 +1,8 @@
 package http
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
@@ -41,4 +43,12 @@ func NewServer(user *handler.UserAPI) *Server {
 
 func (sh *Server) Start() error {
 	return sh.app.Listen(":8080")
+}
+
+func (sh *Server) Shutdown() error {
+	return sh.app.Shutdown()
+}
+
+func (sh *Server) ShutdownWithTimeout(timeout time.Duration) error {
+	return sh.app.ShutdownWithTimeout(timeout)
 }
