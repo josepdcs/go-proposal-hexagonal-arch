@@ -1,3 +1,6 @@
+//go:build integration_test
+// +build integration_test
+
 package ittests
 
 import (
@@ -170,11 +173,6 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 
 	resp, err := client.Do(req)
 	assert.NoError(st.T(), err)
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		assert.NoError(st.T(), err)
-	}(resp.Body)
-
 	assert.Equal(st.T(), http.StatusOK, resp.StatusCode)
 
 	body, err = io.ReadAll(resp.Body)
@@ -186,6 +184,9 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	assert.Equal(st.T(), uint(4), userResponses.ID)
 	assert.Equal(st.T(), "John", userResponses.Name)
 	assert.Equal(st.T(), "Doe", userResponses.Surname)
+
+	err = resp.Body.Close()
+	assert.NoError(st.T(), err)
 
 	// Modify the user
 	user = entity.User{
@@ -202,11 +203,6 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 
 	resp, err = client.Do(req)
 	assert.NoError(st.T(), err)
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		assert.NoError(st.T(), err)
-	}(resp.Body)
-
 	assert.Equal(st.T(), http.StatusOK, resp.StatusCode)
 
 	body, err = io.ReadAll(resp.Body)
@@ -217,6 +213,9 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	assert.Equal(st.T(), uint(4), userResponses.ID)
 	assert.Equal(st.T(), "John Modified", userResponses.Name)
 	assert.Equal(st.T(), "Doe Modified", userResponses.Surname)
+
+	err = resp.Body.Close()
+	assert.NoError(st.T(), err)
 
 	// Delete the user
 	req, err = http.NewRequest(http.MethodDelete, UsersEndpoint+"/4", nil)

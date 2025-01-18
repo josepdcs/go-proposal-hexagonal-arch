@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -39,7 +40,7 @@ func TestUserInMemory_FindByID(t *testing.T) {
 func TestUserInMemory_FindByID_NotFound(t *testing.T) {
 	repo := NewUserInMemory()
 	_, err := repo.FindByID(context.Background(), 4)
-	assert.ErrorIs(t, err, ErrUserNotFound)
+	assert.ErrorIs(t, err, errors.ErrUserNotFound)
 }
 
 func TestUserInMemory_Create(t *testing.T) {
@@ -72,7 +73,7 @@ func TestUserInMemory_Modify_NotFound(t *testing.T) {
 		Name:    "Alice",
 		Surname: "Smith",
 	})
-	assert.ErrorIs(t, err, ErrUserNotFound)
+	assert.ErrorIs(t, err, errors.ErrUserNotFound)
 }
 
 func TestUserInMemory_Delete(t *testing.T) {

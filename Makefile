@@ -21,13 +21,22 @@ build: wire ${BINARY_DIR} ## Compile the code, build Executable File
 run: ## Start application
 	$(GOCMD) run ./cmd/api
 
-test: ## Run tests
+test: test-clean ## Run tests
 	$(info $(M) Running Tests..)
 	$(GOCMD) test ./... -cover
 
-test-coverage: ## Run tests and generate coverage file
+test-coverage: test-clean ## Run tests and generate coverage file
 	$(GOCMD) test ./... -coverprofile=$(CODE_COVERAGE).out
 	$(GOCMD) tool cover -html=$(CODE_COVERAGE).out
+
+test-it: test-clean ## Run integration tests
+	$(info $(M) Running integration tests...) @
+	$(GOCMD) test -p 1 -tags integration_test ./...
+
+
+test-clean: ## Clean the test cache
+	$(info $(M) Cleaning test cache...)
+	$(GOCMD) clean -testcache
 
 deps: ## Install dependencies
 	@echo "Installing dependencies..."
