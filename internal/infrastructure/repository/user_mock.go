@@ -8,61 +8,61 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-// UserMock is a mock implementation of repository.User by using testify mock.Mock
-type UserMock struct {
+// MockUser is a mock implementation of repository.User by using testify mock.Mock
+type MockUser struct {
 	mock.Mock
 }
 
-func NewUserMock() *UserMock {
-	return &UserMock{}
+func NewMockUser() *MockUser {
+	return &MockUser{}
 }
 
-func (m *UserMock) FindAll(ctx context.Context) ([]entity.User, error) {
+func (m *MockUser) FindAll(ctx context.Context) ([]entity.User, error) {
 	args := m.Called(ctx)
 	return args.Get(0).([]entity.User), args.Error(1)
 }
 
-func (m *UserMock) FindByID(ctx context.Context, id uint) (entity.User, error) {
+func (m *MockUser) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	args := m.Called(ctx, id)
 	return args.Get(0).(entity.User), args.Error(1)
 }
 
-func (m *UserMock) Create(ctx context.Context, user entity.User) (entity.User, error) {
+func (m *MockUser) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	return m.save(ctx, user)
 }
 
-func (m *UserMock) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+func (m *MockUser) Modify(ctx context.Context, user entity.User) (entity.User, error) {
 	return m.save(ctx, user)
 }
 
-func (m *UserMock) save(ctx context.Context, user entity.User) (entity.User, error) {
+func (m *MockUser) save(ctx context.Context, user entity.User) (entity.User, error) {
 	args := m.Called(ctx, user)
 	return args.Get(0).(entity.User), args.Error(1)
 }
 
-func (m *UserMock) Delete(ctx context.Context, user entity.User) error {
+func (m *MockUser) Delete(ctx context.Context, user entity.User) error {
 	args := m.Called(ctx, user)
 	return args.Error(0)
 }
 
-// UserFake is a simple fake implementation of repository.User
-type UserFake struct {
+// FakeUser is a simple fake implementation of repository.User
+type FakeUser struct {
 	entities []entity.User
 	err      error
 }
 
-func NewMockUserInMemory(entities []entity.User, err error) repository.User {
-	return &UserFake{
+func NewFakeUser(entities []entity.User, err error) repository.User {
+	return &FakeUser{
 		entities: entities,
 		err:      err,
 	}
 }
 
-func (m *UserFake) FindAll(ctx context.Context) ([]entity.User, error) {
+func (m *FakeUser) FindAll(ctx context.Context) ([]entity.User, error) {
 	return m.entities, m.err
 }
 
-func (m *UserFake) FindByID(ctx context.Context, id uint) (entity.User, error) {
+func (m *FakeUser) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	var u entity.User
 	for _, e := range m.entities {
 		if e.ID == id {
@@ -73,7 +73,7 @@ func (m *UserFake) FindByID(ctx context.Context, id uint) (entity.User, error) {
 	return u, m.err
 }
 
-func (m *UserFake) Create(ctx context.Context, user entity.User) (entity.User, error) {
+func (m *FakeUser) Create(ctx context.Context, user entity.User) (entity.User, error) {
 	var u entity.User
 	for _, e := range m.entities {
 		if e.Name == user.Name && e.Surname == user.Surname {
@@ -84,7 +84,7 @@ func (m *UserFake) Create(ctx context.Context, user entity.User) (entity.User, e
 	return u, m.err
 }
 
-func (m *UserFake) Modify(ctx context.Context, user entity.User) (entity.User, error) {
+func (m *FakeUser) Modify(ctx context.Context, user entity.User) (entity.User, error) {
 	var u entity.User
 	for _, e := range m.entities {
 		if e.ID == user.ID {
@@ -95,6 +95,6 @@ func (m *UserFake) Modify(ctx context.Context, user entity.User) (entity.User, e
 	return u, m.err
 }
 
-func (m *UserFake) Delete(ctx context.Context, user entity.User) error {
+func (m *FakeUser) Delete(ctx context.Context, user entity.User) error {
 	return m.err
 }

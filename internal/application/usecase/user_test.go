@@ -16,14 +16,14 @@ import (
 func TestUserFinderAll_Find(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() *repository.UserMock
-		when  func(userMock *repository.UserMock) ([]entity.User, error)
+		given func() *repository.MockUser
+		when  func(mockUser *repository.MockUser) ([]entity.User, error)
 		then  func([]entity.User, error)
 	}{
 		{
 			name: "should find all users",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				users := []entity.User{
 					{ID: 1, Name: "John", Surname: "Doe"},
 					{ID: 2, Name: "Jane", Surname: "Doe"},
@@ -32,8 +32,8 @@ func TestUserFinderAll_Find(t *testing.T) {
 				m.On("FindAll", context.Background()).Return(users, nil)
 				return m
 			},
-			when: func(userMock *repository.UserMock) ([]entity.User, error) {
-				return NewUserFinderAll(userMock).Find(context.Background())
+			when: func(mockUser *repository.MockUser) ([]entity.User, error) {
+				return NewUserFinderAll(mockUser).Find(context.Background())
 			},
 			then: func(users []entity.User, err error) {
 				assert.NoError(t, err)
@@ -53,14 +53,14 @@ func TestUserFinderAll_Find(t *testing.T) {
 		},
 		{
 			name: "should not find users",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				var users []entity.User
 				m.On("FindAll", context.Background()).Return(users, errors.New("not found"))
 				return m
 			},
-			when: func(userMock *repository.UserMock) ([]entity.User, error) {
-				return NewUserFinderAll(userMock).Find(context.Background())
+			when: func(mockUser *repository.MockUser) ([]entity.User, error) {
+				return NewUserFinderAll(mockUser).Find(context.Background())
 			},
 			then: func(users []entity.User, err error) {
 				assert.Error(t, err)
@@ -71,10 +71,10 @@ func TestUserFinderAll_Find(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Given
-			userMock := tt.given()
+			mockUser := tt.given()
 
 			// When
-			users, err := tt.when(userMock)
+			users, err := tt.when(mockUser)
 
 			// Then
 			tt.then(users, err)
@@ -85,20 +85,20 @@ func TestUserFinderAll_Find(t *testing.T) {
 func TestUserFinderByID_Find(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() *repository.UserMock
-		when  func(userMock *repository.UserMock) (entity.User, error)
+		given func() *repository.MockUser
+		when  func(mockUser *repository.MockUser) (entity.User, error)
 		then  func(entity.User, error)
 	}{
 		{
 			name: "should find user by ID",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				user := entity.User{ID: 1, Name: "John", Surname: "Doe"}
 				m.On("FindByID", context.Background(), user.ID).Return(user, nil)
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserFinderByID(userMock).Find(context.Background(), 1)
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserFinderByID(mockUser).Find(context.Background(), 1)
 			},
 			then: func(user entity.User, err error) {
 				assert.NoError(t, err)
@@ -109,13 +109,13 @@ func TestUserFinderByID_Find(t *testing.T) {
 		},
 		{
 			name: "should not find user by ID",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				m.On("FindByID", context.Background(), mock.Anything).Return(entity.User{}, errors.New("not found"))
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserFinderByID(userMock).Find(context.Background(), 1)
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserFinderByID(mockUser).Find(context.Background(), 1)
 			},
 			then: func(user entity.User, err error) {
 				assert.Error(t, err)
@@ -126,10 +126,10 @@ func TestUserFinderByID_Find(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Given
-			userMock := tt.given()
+			mockUser := tt.given()
 
 			// When
-			user, err := tt.when(userMock)
+			user, err := tt.when(mockUser)
 
 			// Then
 			tt.then(user, err)
@@ -140,21 +140,21 @@ func TestUserFinderByID_Find(t *testing.T) {
 func TestUserCreator_Create(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() *repository.UserMock
-		when  func(userMock *repository.UserMock) (entity.User, error)
+		given func() *repository.MockUser
+		when  func(mockUser *repository.MockUser) (entity.User, error)
 		then  func(entity.User, error)
 	}{
 		{
 			name: "should create user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				user := entity.User{Name: "John", Surname: "Doe"}
 				created := entity.User{ID: 1, Name: "John", Surname: "Doe"}
 				m.On("save", context.Background(), user).Return(created, nil)
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserCreator(userMock).Create(context.Background(), entity.User{Name: "John", Surname: "Doe"})
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserCreator(mockUser).Create(context.Background(), entity.User{Name: "John", Surname: "Doe"})
 			},
 			then: func(user entity.User, err error) {
 				assert.NoError(t, err)
@@ -166,13 +166,13 @@ func TestUserCreator_Create(t *testing.T) {
 		},
 		{
 			name: "should not create user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				m.On("save", context.Background(), mock.Anything).Return(entity.User{}, errors.New("not created"))
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserCreator(userMock).Create(context.Background(), entity.User{})
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserCreator(mockUser).Create(context.Background(), entity.User{})
 			},
 			then: func(user entity.User, err error) {
 				assert.Error(t, err)
@@ -183,10 +183,10 @@ func TestUserCreator_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Given
-			userMock := tt.given()
+			mockUser := tt.given()
 
 			// When
-			user, err := tt.when(userMock)
+			user, err := tt.when(mockUser)
 
 			// Then
 			tt.then(user, err)
@@ -197,20 +197,20 @@ func TestUserCreator_Create(t *testing.T) {
 func TestUserModifier_Modify(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() *repository.UserMock
-		when  func(userMock *repository.UserMock) (entity.User, error)
+		given func() *repository.MockUser
+		when  func(mockUser *repository.MockUser) (entity.User, error)
 		then  func(entity.User, error)
 	}{
 		{
 			name: "should modify user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				user := entity.User{ID: 1, Name: "John", Surname: "Doe"}
 				m.On("save", context.Background(), user).Return(user, nil)
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserModifier(userMock).Modify(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserModifier(mockUser).Modify(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(user entity.User, err error) {
 				assert.NoError(t, err)
@@ -222,13 +222,13 @@ func TestUserModifier_Modify(t *testing.T) {
 		},
 		{
 			name: "should not modify user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				m.On("save", context.Background(), mock.Anything).Return(entity.User{}, errors.New("not modified"))
 				return m
 			},
-			when: func(userMock *repository.UserMock) (entity.User, error) {
-				return NewUserModifier(userMock).Modify(context.Background(), entity.User{})
+			when: func(mockUser *repository.MockUser) (entity.User, error) {
+				return NewUserModifier(mockUser).Modify(context.Background(), entity.User{})
 			},
 			then: func(user entity.User, err error) {
 				assert.Error(t, err)
@@ -239,10 +239,10 @@ func TestUserModifier_Modify(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Given
-			userMock := tt.given()
+			mockUser := tt.given()
 
 			// When
-			user, err := tt.when(userMock)
+			user, err := tt.when(mockUser)
 
 			// Then
 			tt.then(user, err)
@@ -253,20 +253,20 @@ func TestUserModifier_Modify(t *testing.T) {
 func TestUserDeleter_Delete(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() *repository.UserMock
-		when  func(userMock *repository.UserMock) error
+		given func() *repository.MockUser
+		when  func(mockUser *repository.MockUser) error
 		then  func(error)
 	}{
 		{
 			name: "should delete user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				user := entity.User{ID: 1, Name: "John", Surname: "Doe"}
 				m.On("Delete", context.Background(), user).Return(nil)
 				return m
 			},
-			when: func(userMock *repository.UserMock) error {
-				return NewUserDeleter(userMock).Delete(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
+			when: func(mockUser *repository.MockUser) error {
+				return NewUserDeleter(mockUser).Delete(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(err error) {
 				assert.NoError(t, err)
@@ -274,13 +274,13 @@ func TestUserDeleter_Delete(t *testing.T) {
 		},
 		{
 			name: "should not delete user",
-			given: func() *repository.UserMock {
-				m := repository.NewUserMock()
+			given: func() *repository.MockUser {
+				m := repository.NewMockUser()
 				m.On("Delete", context.Background(), mock.Anything).Return(errors.New("not deleted"))
 				return m
 			},
-			when: func(userMock *repository.UserMock) error {
-				return NewUserDeleter(userMock).Delete(context.Background(), entity.User{})
+			when: func(mockUser *repository.MockUser) error {
+				return NewUserDeleter(mockUser).Delete(context.Background(), entity.User{})
 			},
 			then: func(err error) {
 				assert.Error(t, err)
@@ -290,10 +290,10 @@ func TestUserDeleter_Delete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Given
-			userMock := tt.given()
+			mockUser := tt.given()
 
 			// When
-			err := tt.when(userMock)
+			err := tt.when(mockUser)
 
 			// Then
 			tt.then(err)

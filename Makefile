@@ -31,7 +31,7 @@ test-coverage: test-clean ## Run tests and generate coverage file
 
 test-it: test-clean ## Run integration tests
 	$(info $(M) Running integration tests...) @
-	$(GOCMD) test -p 1 -tags integration_test ./...
+	$(GOCMD) test -tags integration_test ./...
 
 
 test-clean: ## Clean the test cache
