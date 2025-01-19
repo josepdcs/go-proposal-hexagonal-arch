@@ -31,9 +31,7 @@ func Login(c *fiber.Ctx) error {
 
 	ss, err := token.SignedString([]byte("secret"))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(ErrorDTO{
-			Error: err.Error(),
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.NewError(fiber.StatusInternalServerError, err.Error()))
 	}
 
 	return c.JSON(fiber.Map{

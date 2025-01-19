@@ -27,13 +27,19 @@ import (
 )
 
 const (
+	LoginEndpoint = "http://localhost:8080/login"
 	UsersEndpoint = "http://localhost:8080/api/users"
 
-	BearerToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzcyNzQxMDh9.rFaq0VmO9kTTBiTJo-54pnE6YylHn91do5Yc-Vf0F4o"
+	BearerToken = "Bearer "
 )
+
+type TokenResponse struct {
+	Token string `json:"token"`
+}
 
 type UserAPITestITSuite struct {
 	suite.Suite
+	token string
 }
 
 func TestUserTestITSuite(t *testing.T) {
@@ -56,6 +62,35 @@ func (st *UserAPITestITSuite) SetupSuite() {
 
 	// Wait for the application to be ready
 	time.Sleep(1 * time.Second)
+
+	// Login to get the token
+	st.doLogin()
+}
+
+func (st *UserAPITestITSuite) doLogin() {
+	req, err := http.NewRequest(http.MethodPost, LoginEndpoint, nil)
+	assert.NoError(st.T(), err)
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	assert.NoError(st.T(), err)
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		assert.NoError(st.T(), err)
+	}(resp.Body)
+
+	assert.Equal(st.T(), http.StatusOK, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	assert.NoError(st.T(), err)
+
+	var tokenResponse TokenResponse
+	err = json.Unmarshal(body, &tokenResponse)
+	assert.NoError(st.T(), err)
+	assert.NotEmpty(st.T(), tokenResponse.Token)
+
+	st.token = tokenResponse.Token
 }
 
 func (st *UserAPITestITSuite) TearDownSuite() {
@@ -89,7 +124,7 @@ func (st *UserAPITestITSuite) startUpDockerCompose() error {
 func (st *UserAPITestITSuite) TestApiUsersFindAll() {
 	req, err := http.NewRequest(http.MethodGet, UsersEndpoint, nil)
 	assert.NoError(st.T(), err)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	client := &http.Client{}
 
@@ -120,7 +155,7 @@ func (st *UserAPITestITSuite) TestApiUsersFindAll() {
 func (st *UserAPITestITSuite) TestApiUsersFindById() {
 	req, err := http.NewRequest(http.MethodGet, UsersEndpoint+"/1", nil)
 	assert.NoError(st.T(), err)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	client := &http.Client{}
 
@@ -147,7 +182,7 @@ func (st *UserAPITestITSuite) TestApiUsersFindById() {
 func (st *UserAPITestITSuite) TestApiUsersFindByIdNotFound() {
 	req, err := http.NewRequest(http.MethodGet, UsersEndpoint+"/999", nil)
 	assert.NoError(st.T(), err)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	client := &http.Client{}
 
@@ -167,7 +202,7 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	req, err := http.NewRequest(http.MethodPost, UsersEndpoint, bytes.NewReader(body))
 	assert.NoError(st.T(), err)
 	req.Header.Add(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	client := &http.Client{}
 
@@ -199,7 +234,7 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	req, err = http.NewRequest(http.MethodPut, UsersEndpoint+"/4", bytes.NewReader(body))
 	assert.NoError(st.T(), err)
 	req.Header.Add(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	resp, err = client.Do(req)
 	assert.NoError(st.T(), err)
@@ -220,7 +255,7 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	// Delete the user
 	req, err = http.NewRequest(http.MethodDelete, UsersEndpoint+"/4", nil)
 	assert.NoError(st.T(), err)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	resp, err = client.Do(req)
 	assert.NoError(st.T(), err)
@@ -229,7 +264,7 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 	// Check that the user has been deleted
 	req, err = http.NewRequest(http.MethodGet, UsersEndpoint+"/4", nil)
 	assert.NoError(st.T(), err)
-	req.Header.Set(fiber.HeaderAuthorization, BearerToken)
+	req.Header.Set(fiber.HeaderAuthorization, BearerToken+st.token)
 
 	resp, err = client.Do(req)
 	assert.NoError(st.T(), err)
