@@ -3,9 +3,9 @@ package app
 import (
 	"time"
 
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/di"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/http"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/di"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/http"
 	"github.com/pkg/errors"
 )
 

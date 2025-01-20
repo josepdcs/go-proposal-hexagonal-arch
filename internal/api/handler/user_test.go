@@ -9,9 +9,9 @@ import (
 
 	json "github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/application/usecase"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
-	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/application/user"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
+	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/errors"
 	testutils "github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/testutil"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
@@ -34,14 +34,14 @@ func TestUserAPI_FindAll(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderAll := usecase.NewMockUserFinderAll()
-				mockUserFinderAll.On("Find", c.UserContext()).Return([]entity.User{
+				mockFinderAllUseCase := user.NewMockFinderAllUseCase()
+				mockFinderAllUseCase.On("Find", c.UserContext()).Return([]entity.User{
 					{ID: 1, Name: "John", Surname: "Doe"},
 					{ID: 2, Name: "Jane", Surname: "Doe"},
 					{ID: 3, Name: "Alice", Surname: "Smith"},
 				}, nil)
 				api := NewUserAPI(
-					mockUserFinderAll,
+					mockFinderAllUseCase,
 					nil,
 					nil,
 					nil,
@@ -83,10 +83,10 @@ func TestUserAPI_FindAll(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderAll := usecase.NewMockUserFinderAll()
-				mockUserFinderAll.On("Find", c.UserContext()).Return([]entity.User{}, errors.New("not found"))
+				mockFinderAllUseCase := user.NewMockFinderAllUseCase()
+				mockFinderAllUseCase.On("Find", c.UserContext()).Return([]entity.User{}, errors.New("not found"))
 				api := NewUserAPI(
-					mockUserFinderAll,
+					mockFinderAllUseCase,
 					nil,
 					nil,
 					nil,
@@ -133,11 +133,11 @@ func TestUserAPI_FindByID(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
 					nil)
@@ -174,11 +174,11 @@ func TestUserAPI_FindByID(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(999)).Return(entity.User{}, errors.New("not found"))
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(999)).Return(entity.User{}, errors.New("not found"))
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
 					nil)
@@ -224,13 +224,13 @@ func TestUserAPI_Create(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserCreator := usecase.NewMockUserCreator()
-				mockUserCreator.On("Create", c.UserContext(), entity.User{Name: "John", Surname: "Doe"}).
+				mockUserCreatorUseCase := user.NewMockUserCreatorUseCase()
+				mockUserCreatorUseCase.On("Create", c.UserContext(), entity.User{Name: "John", Surname: "Doe"}).
 					Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
 				api := NewUserAPI(
 					nil,
 					nil,
-					mockUserCreator,
+					mockUserCreatorUseCase,
 					nil,
 					nil)
 
@@ -267,13 +267,13 @@ func TestUserAPI_Create(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserCreator := usecase.NewMockUserCreator()
-				mockUserCreator.On("Create", c.UserContext(), entity.User{Name: "John", Surname: "Doe"}).
+				mockUserCreatorUseCase := user.NewMockUserCreatorUseCase()
+				mockUserCreatorUseCase.On("Create", c.UserContext(), entity.User{Name: "John", Surname: "Doe"}).
 					Return(entity.User{}, errors.New("error creating user"))
 				api := NewUserAPI(
 					nil,
 					nil,
-					mockUserCreator,
+					mockUserCreatorUseCase,
 					nil,
 					nil)
 
@@ -295,11 +295,11 @@ func TestUserAPI_Create(t *testing.T) {
 			given: func() *fiber.App {
 				a := testutils.App()
 
-				mockUserCreator := usecase.NewMockUserCreator()
+				mockUserCreatorUseCase := user.NewMockUserCreatorUseCase()
 				api := NewUserAPI(
 					nil,
 					nil,
-					mockUserCreator,
+					mockUserCreatorUseCase,
 					nil,
 					nil)
 
@@ -343,14 +343,14 @@ func TestUserAPI_Modify(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserModifier := usecase.NewMockUserModifier()
-				mockUserModifier.On("Modify", c.UserContext(), entity.User{ID: 1, Name: "John Modified", Surname: "Doe Modified"}).
+				mockUserModifierUseCase := user.NewMockUserModifierUseCase()
+				mockUserModifierUseCase.On("Modify", c.UserContext(), entity.User{ID: 1, Name: "John Modified", Surname: "Doe Modified"}).
 					Return(entity.User{ID: 1, Name: "John Modified", Surname: "Doe Modified"}, nil)
 				api := NewUserAPI(
 					nil,
 					nil,
 					nil,
-					mockUserModifier,
+					mockUserModifierUseCase,
 					nil)
 
 				a.Put(ApiUsersEndpoint+"/:id", api.Modify)
@@ -386,14 +386,14 @@ func TestUserAPI_Modify(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserModifier := usecase.NewMockUserModifier()
-				mockUserModifier.On("Modify", c.UserContext(), entity.User{ID: 1, Name: "John Modified", Surname: "Doe Modified"}).
+				mockUserModifierUseCase := user.NewMockUserModifierUseCase()
+				mockUserModifierUseCase.On("Modify", c.UserContext(), entity.User{ID: 1, Name: "John Modified", Surname: "Doe Modified"}).
 					Return(entity.User{}, errors.New("error modifying user"))
 				api := NewUserAPI(
 					nil,
 					nil,
 					nil,
-					mockUserModifier,
+					mockUserModifierUseCase,
 					nil)
 
 				a.Put(ApiUsersEndpoint+"/:id", api.Modify)
@@ -414,12 +414,12 @@ func TestUserAPI_Modify(t *testing.T) {
 			given: func() *fiber.App {
 				a := testutils.App()
 
-				mockUserModifier := usecase.NewMockUserModifier()
+				mockUserModifierUseCase := user.NewMockUserModifierUseCase()
 				api := NewUserAPI(
 					nil,
 					nil,
 					nil,
-					mockUserModifier,
+					mockUserModifierUseCase,
 					nil)
 
 				a.Put(ApiUsersEndpoint+"/:id", api.Modify)
@@ -462,16 +462,16 @@ func TestUserAPI_Delete(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
-				mockUserDeleter := usecase.NewMockUserDeleter()
-				mockUserDeleter.On("Delete", c.UserContext(), entity.User{ID: 1, Name: "John", Surname: "Doe"}).Return(nil)
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
+				mockUserDeleterUseCase := user.NewMockUserDeleterUseCase()
+				mockUserDeleterUseCase.On("Delete", c.UserContext(), entity.User{ID: 1, Name: "John", Surname: "Doe"}).Return(nil)
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
-					mockUserDeleter)
+					mockUserDeleterUseCase)
 
 				a.Delete(ApiUsersEndpoint+"/:id", api.Delete)
 				return a
@@ -491,17 +491,17 @@ func TestUserAPI_Delete(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
-				mockUserDeleter := usecase.NewMockUserDeleter()
-				mockUserDeleter.On("Delete", c.UserContext(), entity.User{ID: 1, Name: "John", Surname: "Doe"}).
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{ID: 1, Name: "John", Surname: "Doe"}, nil)
+				mockUserDeleterUseCase := user.NewMockUserDeleterUseCase()
+				mockUserDeleterUseCase.On("Delete", c.UserContext(), entity.User{ID: 1, Name: "John", Surname: "Doe"}).
 					Return(errors.New("error deleting user"))
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
-					mockUserDeleter)
+					mockUserDeleterUseCase)
 
 				a.Delete(ApiUsersEndpoint+"/:id", api.Delete)
 				return a
@@ -521,15 +521,15 @@ func TestUserAPI_Delete(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, domerrors.ErrUserNotFound)
-				mockUserDeleter := usecase.NewMockUserDeleter()
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, domerrors.ErrUserNotFound)
+				mockUserDeleterUseCase := user.NewMockUserDeleterUseCase()
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
-					mockUserDeleter)
+					mockUserDeleterUseCase)
 
 				a.Delete(ApiUsersEndpoint+"/:id", api.Delete)
 				return a
@@ -549,15 +549,15 @@ func TestUserAPI_Delete(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, nil)
-				mockUserDeleter := usecase.NewMockUserDeleter()
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, nil)
+				mockUserDeleterUseCase := user.NewMockUserDeleterUseCase()
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
-					mockUserDeleter)
+					mockUserDeleterUseCase)
 
 				a.Delete(ApiUsersEndpoint+"/:id", api.Delete)
 				return a
@@ -577,15 +577,15 @@ func TestUserAPI_Delete(t *testing.T) {
 				a := testutils.App()
 				c := testutils.AcquireFiberCtx(a)
 
-				mockUserFinderByID := usecase.NewMockUserFinderByID()
-				mockUserFinderByID.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, errors.New("error finding user"))
-				mockUserDeleter := usecase.NewMockUserDeleter()
+				mockUserFinderByIDUseCase := user.NewMockUserFinderByIDUseCase()
+				mockUserFinderByIDUseCase.On("Find", c.UserContext(), uint(1)).Return(entity.User{}, errors.New("error finding user"))
+				mockUserDeleterUseCase := user.NewMockUserDeleterUseCase()
 				api := NewUserAPI(
 					nil,
-					mockUserFinderByID,
+					mockUserFinderByIDUseCase,
 					nil,
 					nil,
-					mockUserDeleter)
+					mockUserDeleterUseCase)
 
 				a.Delete(ApiUsersEndpoint+"/:id", api.Delete)
 				return a

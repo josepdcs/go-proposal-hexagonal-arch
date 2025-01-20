@@ -1,14 +1,14 @@
-package repository
+package user
 
 import (
 	"testing"
 
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserInMemoryEntity_toEntityUser(t *testing.T) {
-	userEntity := UserInMemoryEntity{
+func TestInMemoryEntity_toEntityUser(t *testing.T) {
+	userEntity := InMemoryEntity{
 		ID:      1,
 		Name:    "John",
 		Surname: "Doe",
@@ -19,21 +19,21 @@ func TestUserInMemoryEntity_toEntityUser(t *testing.T) {
 	assert.Equal(t, userEntity.Surname, user.Surname)
 }
 
-func TestUserInMemoryEntity_fromEntityUser(t *testing.T) {
+func TestInMemoryEntity_fromEntityUser(t *testing.T) {
 	user := entity.User{
 		ID:      1,
 		Name:    "John",
 		Surname: "Doe",
 	}
-	userEntity := UserInMemoryEntity{}
+	userEntity := InMemoryEntity{}
 	userEntity = userEntity.fromEntityUser(user)
 	assert.Equal(t, user.ID, userEntity.ID)
 	assert.Equal(t, user.Name, userEntity.Name)
 	assert.Equal(t, user.Surname, userEntity.Surname)
 }
 
-func TestUserDBEntity_toEntityUser(t *testing.T) {
-	userDBEntity := UserDBEntity{
+func TestDBEntity_toEntityUser(t *testing.T) {
+	userDBEntity := DBEntity{
 		ID:      1,
 		Name:    "John",
 		Surname: "Doe",
@@ -44,13 +44,13 @@ func TestUserDBEntity_toEntityUser(t *testing.T) {
 	assert.Equal(t, userDBEntity.Surname, user.Surname)
 }
 
-func TestUserDBEntity_fromEntityUser(t *testing.T) {
+func TestDBEntity_fromEntityUser(t *testing.T) {
 	user := entity.User{
 		ID:      1,
 		Name:    "John",
 		Surname: "Doe",
 	}
-	userDBEntity := UserDBEntity{}
+	userDBEntity := DBEntity{}
 	userDBEntity = userDBEntity.fromEntityUser(user)
 	assert.Equal(t, user.ID, userDBEntity.ID)
 	assert.Equal(t, user.Name, userDBEntity.Name)

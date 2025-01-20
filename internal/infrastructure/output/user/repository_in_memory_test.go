@@ -1,4 +1,4 @@
-package repository
+package user
 
 import (
 	"cmp"
@@ -6,13 +6,13 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/errors"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserInMemory_FindAll(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_FindAll(t *testing.T) {
+	repo := NewInMemoryRepository()
 	users, err := repo.FindAll(context.Background())
 	assert.NoError(t, err)
 	assert.Len(t, users, 3)
@@ -29,22 +29,22 @@ func TestUserInMemory_FindAll(t *testing.T) {
 	assert.Equal(t, "Smith", users[2].Surname)
 }
 
-func TestUserInMemory_FindByID(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_FindByID(t *testing.T) {
+	repo := NewInMemoryRepository()
 	user, err := repo.FindByID(context.Background(), 1)
 	assert.NoError(t, err)
 	assert.Equal(t, "John", user.Name)
 	assert.Equal(t, "Doe", user.Surname)
 }
 
-func TestUserInMemory_FindByID_NotFound(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_FindByID_NotFound(t *testing.T) {
+	repo := NewInMemoryRepository()
 	_, err := repo.FindByID(context.Background(), 4)
 	assert.ErrorIs(t, err, errors.ErrUserNotFound)
 }
 
-func TestUserInMemory_Create(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_Create(t *testing.T) {
+	repo := NewInMemoryRepository()
 	user, err := repo.Create(context.Background(), entity.User{
 		Name:    "Alice",
 		Surname: "Smith",
@@ -54,8 +54,8 @@ func TestUserInMemory_Create(t *testing.T) {
 	assert.Equal(t, "Smith", user.Surname)
 }
 
-func TestUserInMemory_Modify(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_Modify(t *testing.T) {
+	repo := NewInMemoryRepository()
 	user, err := repo.Modify(context.Background(), entity.User{
 		ID:      1,
 		Name:    "Alice",
@@ -66,8 +66,8 @@ func TestUserInMemory_Modify(t *testing.T) {
 	assert.Equal(t, "Smith", user.Surname)
 }
 
-func TestUserInMemory_Modify_NotFound(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_Modify_NotFound(t *testing.T) {
+	repo := NewInMemoryRepository()
 	_, err := repo.Modify(context.Background(), entity.User{
 		ID:      4,
 		Name:    "Alice",
@@ -76,8 +76,8 @@ func TestUserInMemory_Modify_NotFound(t *testing.T) {
 	assert.ErrorIs(t, err, errors.ErrUserNotFound)
 }
 
-func TestUserInMemory_Delete(t *testing.T) {
-	repo := NewUserInMemory()
+func TestInMemoryRepository_Delete(t *testing.T) {
+	repo := NewInMemoryRepository()
 	err := repo.Delete(context.Background(), entity.User{
 		ID: 1,
 	})

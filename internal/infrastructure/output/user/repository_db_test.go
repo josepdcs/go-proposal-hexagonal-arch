@@ -1,4 +1,4 @@
-package repository
+package user
 
 import (
 	"context"
@@ -8,22 +8,22 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/repository"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/port/output/user"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserDB_FindAll(t *testing.T) {
+func TestDBRepository_FindAll(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() (repository.User, sqlmock.Sqlmock)
-		when  func(r repository.User) ([]entity.User, error)
+		given func() (user.Repository, sqlmock.Sqlmock)
+		when  func(r user.Repository) ([]entity.User, error)
 		then  func(sqlmock.Sqlmock, []entity.User, error)
 	}{
 		{
 			name: "should find all users",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -37,9 +37,9 @@ func TestUserDB_FindAll(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE "users"."deleted_at" IS NULL`)).
 					WillReturnRows(rows)
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) ([]entity.User, error) {
+			when: func(r user.Repository) ([]entity.User, error) {
 				return r.FindAll(context.Background())
 			},
 			then: func(mock sqlmock.Sqlmock, users []entity.User, err error) {
@@ -57,7 +57,7 @@ func TestUserDB_FindAll(t *testing.T) {
 		},
 		{
 			name: "should not find users",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -66,9 +66,9 @@ func TestUserDB_FindAll(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE "users"."deleted_at" IS NULL`)).
 					WillReturnError(errors.New("not found"))
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) ([]entity.User, error) {
+			when: func(r user.Repository) ([]entity.User, error) {
 				return r.FindAll(context.Background())
 			},
 			then: func(mock sqlmock.Sqlmock, users []entity.User, err error) {
@@ -93,16 +93,16 @@ func TestUserDB_FindAll(t *testing.T) {
 	}
 }
 
-func TestUserDB_FindByID(t *testing.T) {
+func TestDBRepository_FindByID(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() (repository.User, sqlmock.Sqlmock)
-		when  func(r repository.User) (entity.User, error)
+		given func() (user.Repository, sqlmock.Sqlmock)
+		when  func(r user.Repository) (entity.User, error)
 		then  func(sqlmock.Sqlmock, entity.User, error)
 	}{
 		{
 			name: "should find user by ID",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -117,9 +117,9 @@ func TestUserDB_FindByID(t *testing.T) {
 					WithArgs(1, 1).
 					WillReturnRows(rows)
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.FindByID(context.Background(), 1)
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -132,7 +132,7 @@ func TestUserDB_FindByID(t *testing.T) {
 		},
 		{
 			name: "should not find user by ID",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -142,9 +142,9 @@ func TestUserDB_FindByID(t *testing.T) {
 					WithArgs(1, 1).
 					WillReturnError(errors.New("not found"))
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.FindByID(context.Background(), 1)
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -177,16 +177,16 @@ func (a AnyTime) Match(v driver.Value) bool {
 	return ok
 }
 
-func TestUserDB_Create(t *testing.T) {
+func TestDBRepository_Create(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() (repository.User, sqlmock.Sqlmock)
-		when  func(r repository.User) (entity.User, error)
+		given func() (user.Repository, sqlmock.Sqlmock)
+		when  func(r user.Repository) (entity.User, error)
 		then  func(sqlmock.Sqlmock, entity.User, error)
 	}{
 		{
 			name: "should create user",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
 				db, mock, err := newMockMySqlDB()
@@ -204,9 +204,9 @@ func TestUserDB_Create(t *testing.T) {
 				WithArgs("John", "Doe").
 				WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))*/
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.Create(context.Background(), entity.User{Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -219,7 +219,7 @@ func TestUserDB_Create(t *testing.T) {
 		},
 		{
 			name: "should not create user",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
 				db, mock, err := newMockMySqlDB()
@@ -239,9 +239,9 @@ func TestUserDB_Create(t *testing.T) {
 					WillReturnError(errors.New("failed to create user"))
 				mock.ExpectRollback()*/
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.Create(context.Background(), entity.User{Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -266,16 +266,16 @@ func TestUserDB_Create(t *testing.T) {
 	}
 }
 
-func TestUserDB_Modify(t *testing.T) {
+func TestDBRepository_Modify(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() (repository.User, sqlmock.Sqlmock)
-		when  func(r repository.User) (entity.User, error)
+		given func() (user.Repository, sqlmock.Sqlmock)
+		when  func(r user.Repository) (entity.User, error)
 		then  func(sqlmock.Sqlmock, entity.User, error)
 	}{
 		{
 			name: "should modify user",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
 				db, mock, err := newMockMySqlDB()
@@ -289,9 +289,9 @@ func TestUserDB_Modify(t *testing.T) {
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.Modify(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -304,7 +304,7 @@ func TestUserDB_Modify(t *testing.T) {
 		},
 		{
 			name: "should not modify user",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
 				db, mock, err := newMockMySqlDB()
@@ -318,9 +318,9 @@ func TestUserDB_Modify(t *testing.T) {
 					WillReturnError(errors.New("failed to create user"))
 				mock.ExpectRollback()
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) (entity.User, error) {
+			when: func(r user.Repository) (entity.User, error) {
 				return r.Modify(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, user entity.User, err error) {
@@ -345,16 +345,16 @@ func TestUserDB_Modify(t *testing.T) {
 	}
 }
 
-func TestUserDB_Delete(t *testing.T) {
+func TestDBRepository_Delete(t *testing.T) {
 	tests := []struct {
 		name  string
-		given func() (repository.User, sqlmock.Sqlmock)
-		when  func(r repository.User) error
+		given func() (user.Repository, sqlmock.Sqlmock)
+		when  func(r user.Repository) error
 		then  func(sqlmock.Sqlmock, error)
 	}{
 		{
 			name: "should find user by ID",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -366,9 +366,9 @@ func TestUserDB_Delete(t *testing.T) {
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) error {
+			when: func(r user.Repository) error {
 				return r.Delete(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, err error) {
@@ -379,7 +379,7 @@ func TestUserDB_Delete(t *testing.T) {
 		},
 		{
 			name: "should not find user by ID",
-			given: func() (repository.User, sqlmock.Sqlmock) {
+			given: func() (user.Repository, sqlmock.Sqlmock) {
 				db, mock, err := newMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
@@ -391,9 +391,9 @@ func TestUserDB_Delete(t *testing.T) {
 					WillReturnError(errors.New("not found"))
 				mock.ExpectRollback()
 
-				return NewUserDB(db), mock
+				return NewDBRepository(db), mock
 			},
-			when: func(r repository.User) error {
+			when: func(r user.Repository) error {
 				return r.Delete(context.Background(), entity.User{ID: 1, Name: "John", Surname: "Doe"})
 			},
 			then: func(mock sqlmock.Sqlmock, err error) {

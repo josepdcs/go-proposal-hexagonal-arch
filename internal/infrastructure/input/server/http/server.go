@@ -5,10 +5,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/middleware"
-
 	_ "github.com/josepdcs/go-proposal-hexagonal-arch/cmd/api/docs"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/api/handler"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/middleware"
 )
 
 const (

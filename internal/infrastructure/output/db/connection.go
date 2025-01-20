@@ -3,8 +3,8 @@ package db
 import (
 	"fmt"
 
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/repository"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/config"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/output/user"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,7 @@ func ConnectDatabase(cfg config.DB) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&repository.UserDBEntity{})
+	err = db.AutoMigrate(&user.DBEntity{})
 	if err != nil {
 		return nil, err
 	}

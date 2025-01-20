@@ -2,9 +2,9 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/entity"
-	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/errors"
-	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/usecase"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
+	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/errors"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/port/input/user"
 	"github.com/pkg/errors"
 )
 
@@ -12,11 +12,11 @@ const errBuildResponseTxt = "cannot build response"
 
 // UserAPI encapsulates the user use cases.
 type UserAPI struct {
-	finderAll  usecase.UserFinderAll
-	finderByID usecase.UserFinderByID
-	creator    usecase.UserCreator
-	modifier   usecase.UserModifier
-	deleter    usecase.UserDeleter
+	finderAllUseCase  user.FinderAllUseCase
+	finderByIDUseCase user.FinderByIDUseCase
+	creatorUseCase    user.CreatorUseCase
+	modifierUseCase   user.ModifierUseCase
+	deleterUseCase    user.DeleterUseCase
 }
 
 type UserDTO struct {
@@ -45,18 +45,18 @@ func toUserDTO(u entity.User) UserDTO {
 
 // NewUserAPI creates a new UserAPI.
 func NewUserAPI(
-	finderAll usecase.UserFinderAll,
-	finderByID usecase.UserFinderByID,
-	creator usecase.UserCreator,
-	modifier usecase.UserModifier,
-	deleter usecase.UserDeleter,
+	finderAllUseCase user.FinderAllUseCase,
+	finderByIDUseCase user.FinderByIDUseCase,
+	creatorUseCase user.CreatorUseCase,
+	modifierUseCase user.ModifierUseCase,
+	deleterUseCase user.DeleterUseCase,
 ) *UserAPI {
 	return &UserAPI{
-		finderAll:  finderAll,
-		finderByID: finderByID,
-		creator:    creator,
-		modifier:   modifier,
-		deleter:    deleter,
+		finderAllUseCase:  finderAllUseCase,
+		finderByIDUseCase: finderByIDUseCase,
+		creatorUseCase:    creatorUseCase,
+		modifierUseCase:   modifierUseCase,
+		deleterUseCase:    deleterUseCase,
 	}
 }
 
@@ -70,14 +70,14 @@ func NewUserAPI(
 // @Router /api/users [get]
 // @response 200 {object} []UserDTO "OK"
 func (h *UserAPI) FindAll(c *fiber.Ctx) error {
-	users, err := h.finderAll.Find(c.UserContext())
+	users, err := h.finderAllUseCase.Find(c.UserContext())
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusNotFound)
 	} else {
 		response := make([]UserDTO, 0, len(users))
-		for _, user := range users {
-			response = append(response, toUserDTO(user))
+		for _, u := range users {
+			response = append(response, toUserDTO(u))
 		}
 		return c.JSON(response)
 	}
@@ -101,12 +101,12 @@ func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "cannot parse id"))
 	}
 
-	user, err := h.finderByID.Find(c.UserContext(), uint(id))
+	u, err := h.finderByIDUseCase.Find(c.UserContext(), uint(id))
 
 	if err != nil {
 		return c.SendStatus(fiber.StatusNotFound)
 	} else {
-		return c.JSON(toUserDTO(user))
+		return c.JSON(toUserDTO(u))
 	}
 }
 
@@ -128,13 +128,13 @@ func (h *UserAPI) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.NewError(fiber.StatusBadRequest, err.Error()))
 	}
 
-	user, err := h.creator.Create(c.UserContext(), userDTO.toEntityUser())
+	u, err := h.creatorUseCase.Create(c.UserContext(), userDTO.toEntityUser())
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "Cannot create user: "+err.Error()))
 	} else {
-		return c.Status(fiber.StatusCreated).JSON(toUserDTO(user))
+		return c.Status(fiber.StatusCreated).JSON(toUserDTO(u))
 	}
 }
 
@@ -156,13 +156,13 @@ func (h *UserAPI) Modify(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.NewError(fiber.StatusBadRequest, err.Error()))
 	}
 
-	user, err := h.modifier.Modify(c.UserContext(), userDTO.toEntityUser())
+	u, err := h.modifierUseCase.Modify(c.UserContext(), userDTO.toEntityUser())
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "Cannot modify user: "+err.Error()))
 	} else {
-		return c.JSON(toUserDTO(user))
+		return c.JSON(toUserDTO(u))
 	}
 }
 
@@ -183,7 +183,7 @@ func (h *UserAPI) Delete(c *fiber.Ctx) error {
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "cannot parse id"))
 	}
 
-	user, err := h.finderByID.Find(c.UserContext(), uint(id))
+	u, err := h.finderByIDUseCase.Find(c.UserContext(), uint(id))
 
 	if err != nil {
 		if errors.Is(err, domerrors.ErrUserNotFound) {
@@ -192,11 +192,11 @@ func (h *UserAPI) Delete(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.NewError(fiber.StatusInternalServerError, err.Error()))
 	}
 
-	if user == (entity.User{}) {
+	if u == (entity.User{}) {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.NewError(fiber.StatusNotFound, "User not found"))
 	}
 
-	err = h.deleter.Delete(c.UserContext(), user)
+	err = h.deleterUseCase.Delete(c.UserContext(), u)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "Cannot delete user: "+err.Error()))
