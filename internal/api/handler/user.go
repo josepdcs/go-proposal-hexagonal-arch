@@ -134,7 +134,7 @@ func (h *UserAPI) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).
 			JSON(fiber.NewError(fiber.StatusInternalServerError, "Cannot create user: "+err.Error()))
 	} else {
-		return c.JSON(toUserDTO(user))
+		return c.Status(fiber.StatusCreated).JSON(toUserDTO(user))
 	}
 }
 

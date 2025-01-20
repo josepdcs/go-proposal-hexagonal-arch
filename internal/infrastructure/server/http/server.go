@@ -52,3 +52,7 @@ func (sh *Server) Shutdown() error {
 func (sh *Server) ShutdownWithTimeout(timeout time.Duration) error {
 	return sh.app.ShutdownWithTimeout(timeout)
 }
+
+func (sh *Server) Fiber() *fiber.App {
+	return sh.app
+}

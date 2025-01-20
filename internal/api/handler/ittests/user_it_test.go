@@ -208,7 +208,7 @@ func (st *UserAPITestITSuite) TestApiUsersCreateModifyAndDelete() {
 
 	resp, err := client.Do(req)
 	assert.NoError(st.T(), err)
-	assert.Equal(st.T(), http.StatusOK, resp.StatusCode)
+	assert.Equal(st.T(), http.StatusCreated, resp.StatusCode)
 
 	body, err = io.ReadAll(resp.Body)
 	assert.NoError(st.T(), err)
