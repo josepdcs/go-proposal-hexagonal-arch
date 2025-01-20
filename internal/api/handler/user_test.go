@@ -12,7 +12,7 @@ import (
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/application/user"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
 	domerrors "github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/errors"
-	testutils "github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/testutil"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/input/server/testutil"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )

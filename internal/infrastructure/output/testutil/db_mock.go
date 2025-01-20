@@ -1,4 +1,4 @@
-package user
+package testutil
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// newMockPostgresSqlDB creates a new mock database for PostgresSQL
-func newMockPostgresSqlDB() (*gorm.DB, sqlmock.Sqlmock, error) {
+// NewMockPostgresSqlDB creates a new mock database for PostgresSQL
+func NewMockPostgresSqlDB() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		return nil, nil, err
@@ -25,8 +25,8 @@ func newMockPostgresSqlDB() (*gorm.DB, sqlmock.Sqlmock, error) {
 	return gormDB, mock, nil
 }
 
-// newMockMySqlDB creates a new mock database for MySQL
-func newMockMySqlDB() (*gorm.DB, sqlmock.Sqlmock, error) {
+// NewMockMySqlDB creates a new mock database for MySQL
+func NewMockMySqlDB() (*gorm.DB, sqlmock.Sqlmock, error) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		return nil, nil, err

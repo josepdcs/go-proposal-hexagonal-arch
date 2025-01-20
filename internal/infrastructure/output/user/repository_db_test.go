@@ -10,6 +10,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/model/entity"
 	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/domain/port/output/user"
+	"github.com/josepdcs/go-proposal-hexagonal-arch/internal/infrastructure/output/testutil"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
@@ -24,7 +25,7 @@ func TestDBRepository_FindAll(t *testing.T) {
 		{
 			name: "should find all users",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -58,7 +59,7 @@ func TestDBRepository_FindAll(t *testing.T) {
 		{
 			name: "should not find users",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -103,7 +104,7 @@ func TestDBRepository_FindByID(t *testing.T) {
 		{
 			name: "should find user by ID",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -133,7 +134,7 @@ func TestDBRepository_FindByID(t *testing.T) {
 		{
 			name: "should not find user by ID",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -189,7 +190,7 @@ func TestDBRepository_Create(t *testing.T) {
 			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
-				db, mock, err := newMockMySqlDB()
+				db, mock, err := testutil.NewMockMySqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -222,7 +223,7 @@ func TestDBRepository_Create(t *testing.T) {
 			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
-				db, mock, err := newMockMySqlDB()
+				db, mock, err := testutil.NewMockMySqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -278,7 +279,7 @@ func TestDBRepository_Modify(t *testing.T) {
 			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
-				db, mock, err := newMockMySqlDB()
+				db, mock, err := testutil.NewMockMySqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -307,7 +308,7 @@ func TestDBRepository_Modify(t *testing.T) {
 			given: func() (user.Repository, sqlmock.Sqlmock) {
 				// here we create a new mock database for MySQL due to the limitations of go-sqlmock with PostgresSQL
 				// see https://github.com/DATA-DOG/go-sqlmock/issues/118
-				db, mock, err := newMockMySqlDB()
+				db, mock, err := testutil.NewMockMySqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -355,7 +356,7 @@ func TestDBRepository_Delete(t *testing.T) {
 		{
 			name: "should find user by ID",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -380,7 +381,7 @@ func TestDBRepository_Delete(t *testing.T) {
 		{
 			name: "should not find user by ID",
 			given: func() (user.Repository, sqlmock.Sqlmock) {
-				db, mock, err := newMockPostgresSqlDB()
+				db, mock, err := testutil.NewMockPostgresSqlDB()
 				if err != nil {
 					t.Fatal(err)
 				}
