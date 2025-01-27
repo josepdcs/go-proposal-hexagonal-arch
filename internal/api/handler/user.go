@@ -118,9 +118,9 @@ func (h *UserAPI) FindByID(c *fiber.Ctx) error {
 // @id Create
 // @accept json
 // @produce json
-// @param user body entity.User true "entity.User"
+// @param user body UserDTO true "UserDTO"
 // @Router /api/users [post]
-// @response 200 {object} UserDTO "OK"
+// @response 201 {object} UserDTO "Created"
 func (h *UserAPI) Create(c *fiber.Ctx) error {
 	var userDTO UserDTO
 
@@ -146,7 +146,7 @@ func (h *UserAPI) Create(c *fiber.Ctx) error {
 // @id Modify
 // @accept json
 // @produce json
-// @param user body entity.User true "entity.User"
+// @param user body UserDTO true "UserDTO"
 // @Router /api/users [put]
 // @response 200 {object} UserDTO "OK"
 func (h *UserAPI) Modify(c *fiber.Ctx) error {

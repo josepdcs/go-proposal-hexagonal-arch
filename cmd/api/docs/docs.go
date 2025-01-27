@@ -45,7 +45,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/handler.Response"
+                                "$ref": "#/definitions/handler.UserDTO"
                             }
                         }
                     }
@@ -71,12 +71,12 @@ var doc = `{
                 "operationId": "Modify",
                 "parameters": [
                     {
-                        "description": "entity.User",
+                        "description": "UserDTO",
                         "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 ],
@@ -84,7 +84,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 }
@@ -109,20 +109,20 @@ var doc = `{
                 "operationId": "Create",
                 "parameters": [
                     {
-                        "description": "entity.User",
+                        "description": "UserDTO",
                         "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 }
@@ -157,7 +157,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 }
@@ -187,7 +187,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.Response"
+                            "$ref": "#/definitions/handler.UserDTO"
                         }
                     }
                 }
@@ -195,21 +195,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "entity.User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "surname": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.Response": {
+        "handler.UserDTO": {
             "type": "object",
             "properties": {
                 "id": {

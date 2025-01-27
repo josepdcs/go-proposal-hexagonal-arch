@@ -1,14 +1,5 @@
 definitions:
-  entity.User:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      surname:
-        type: string
-    type: object
-  handler.Response:
+  handler.UserDTO:
     properties:
       id:
         type: integer
@@ -31,7 +22,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/handler.Response'
+              $ref: '#/definitions/handler.UserDTO'
             type: array
       security:
       - ApiKeyAuth: []
@@ -44,19 +35,19 @@ paths:
       description: Create a user
       operationId: Create
       parameters:
-      - description: entity.User
+      - description: UserDTO
         in: body
         name: user
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/handler.UserDTO'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/handler.UserDTO'
       security:
       - ApiKeyAuth: []
       summary: Create a user
@@ -68,19 +59,19 @@ paths:
       description: Modify a user
       operationId: Modify
       parameters:
-      - description: entity.User
+      - description: UserDTO
         in: body
         name: user
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/handler.UserDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/handler.UserDTO'
       security:
       - ApiKeyAuth: []
       summary: Modify a user
@@ -100,7 +91,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/handler.UserDTO'
       security:
       - ApiKeyAuth: []
       summary: Delete a user
@@ -121,7 +112,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.Response'
+            $ref: '#/definitions/handler.UserDTO'
       security:
       - ApiKeyAuth: []
       summary: Get a user by ID
